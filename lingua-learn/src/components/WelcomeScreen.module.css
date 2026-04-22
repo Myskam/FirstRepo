@@ -1,0 +1,59 @@
+.screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #58cc02 0%, #1cb0f6 100%);
+  padding: 24px;
+}
+
+.card {
+  background: var(--white);
+  border-radius: 24px;
+  padding: 48px 40px;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.16);
+}
+
+.owl {
+  font-size: 5rem;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--green);
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: var(--gray-400);
+  line-height: 1.6;
+  margin-bottom: 28px;
+  font-size: 0.95rem;
+}
+
+.label {
+  display: block;
+  text-align: left;
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.keyInput {
+  margin-bottom: 16px;
+}
+
+.existing {
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: var(--gray-400);
+}

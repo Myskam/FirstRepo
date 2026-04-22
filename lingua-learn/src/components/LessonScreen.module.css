@@ -1,0 +1,40 @@
+.screen { min-height: 100vh; display: flex; flex-direction: column; }
+
+.content {
+  flex: 1;
+  max-width: 680px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 28px 24px;
+}
+
+.heading { font-size: 1.5rem; font-weight: 900; margin-bottom: 4px; }
+.sub     { color: var(--gray-400); margin-bottom: 24px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+
+.typeCard {
+  background: var(--white);
+  border: 2px solid var(--gray-200);
+  border-radius: 18px;
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.18s, transform 0.15s, box-shadow 0.15s;
+  text-align: center;
+  width: 100%;
+}
+.typeCard:hover { border-color: var(--blue); transform: translateY(-2px); box-shadow: 0 6px 14px rgba(28,176,246,0.18); }
+
+.typeIcon { font-size: 2.2rem; }
+.typeCard strong { font-size: 1rem; font-weight: 800; }
+.typeDesc { font-size: 0.8rem; color: var(--gray-400); line-height: 1.4; }
