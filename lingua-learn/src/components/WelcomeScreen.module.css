@@ -52,6 +52,15 @@
   margin-bottom: 16px;
 }
 
+.divider {
+  margin: 14px 0;
+  color: var(--gray-400);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .existing {
   margin-top: 16px;
   font-size: 0.85rem;

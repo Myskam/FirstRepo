@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import WelcomeScreen   from './components/WelcomeScreen';
 import UploadScreen    from './components/UploadScreen';
 import AnalyzingScreen from './components/AnalyzingScreen';
@@ -9,6 +9,7 @@ import CompleteScreen  from './components/CompleteScreen';
 import Toast, { useToast, toast } from './components/Toast';
 import { analyzeImage } from './utils/claude';
 import { buildCourse }  from './utils/courseBuilder';
+import { loadCachedGermanCourse, buildGermanCourse, clearGermanCourseCache } from './utils/germanTutorLoader';
 
 function loadState() {
   return {
@@ -119,9 +120,35 @@ export default function App() {
     }
   }
 
+  /* ── Load German Tutor preset ── */
+  async function handleLoadGermanTutor() {
+    const cached = loadCachedGermanCourse();
+    if (cached) {
+      setCourse(cached);
+      localStorage.setItem('ll_course', JSON.stringify(cached));
+      setScreen('course');
+      return;
+    }
+    if (!apiKey.trim()) {
+      toast('Enter your Claude API key first to scan the course materials');
+      return;
+    }
+    setScreen('analyzing');
+    try {
+      const newCourse = await buildGermanCourse(apiKey, setStatus);
+      setCourse(newCourse);
+      localStorage.setItem('ll_course', JSON.stringify(newCourse));
+      setScreen('course');
+    } catch (err) {
+      toast(err.message);
+      setScreen('welcome');
+    }
+  }
+
   /* ── Reset ── */
   function handleReset() {
-    ['ll_course','ll_xp','ll_streak'].forEach(k => localStorage.removeItem(k));
+    ['ll_course', 'll_xp', 'll_streak'].forEach(k => localStorage.removeItem(k));
+    clearGermanCourseCache();
     setCourse(null);
     setTotalXP(0);
     setStreak(0);
@@ -130,7 +157,14 @@ export default function App() {
 
   return (
     <>
-      {screen === 'welcome'   && <WelcomeScreen   onStart={handleStart} savedCourse={course} />}
+      {screen === 'welcome' && (
+        <WelcomeScreen
+          onStart={handleStart}
+          savedCourse={course}
+          onLoadGermanTutor={handleLoadGermanTutor}
+          hasGermanCache={!!loadCachedGermanCourse()}
+        />
+      )}
       {screen === 'upload'    && <UploadScreen    onAnalyze={handleAnalyze} />}
       {screen === 'analyzing' && <AnalyzingScreen status={status} />}
       {screen === 'course'    && course && (

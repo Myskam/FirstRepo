@@ -12,6 +12,17 @@ dist
 dist-ssr
 *.local
 
+# pdf.js worker (copied from node_modules at install time)
+public/pdf.worker.min.mjs
+
+# German Tutor course files (keep manifest.json, ignore binaries)
+public/german-tutor/*.jpg
+public/german-tutor/*.jpeg
+public/german-tutor/*.png
+public/german-tutor/*.webp
+public/german-tutor/*.gif
+public/german-tutor/*.pdf
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

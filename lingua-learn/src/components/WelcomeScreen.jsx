@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styles from './WelcomeScreen.module.css';
 import { toast } from './Toast';
 
-export default function WelcomeScreen({ onStart, savedCourse }) {
+export default function WelcomeScreen({ onStart, savedCourse, onLoadGermanTutor, hasGermanCache }) {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('ll_apiKey') ?? '');
 
   function handleStart() {
@@ -33,6 +33,12 @@ export default function WelcomeScreen({ onStart, savedCourse }) {
 
         <button className="btn btn-primary" onClick={handleStart}>
           {savedCourse ? 'Continue Course →' : 'Get Started →'}
+        </button>
+
+        <div className={styles.divider}>or</div>
+
+        <button className="btn btn-secondary" onClick={onLoadGermanTutor}>
+          {hasGermanCache ? '📖 Continue German Tutor' : '🇩🇪 Load German Tutor'}
         </button>
 
         {savedCourse && (
