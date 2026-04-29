@@ -1,0 +1,17 @@
+{
+  "rewrites": [
+    {
+      "source": "/((?!assets|icons|manifest\\.json|sw\\.js|favicon\\.svg|icons\\.svg|pdf\\.worker\\.min\\.mjs|german-tutor).*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Service-Worker-Allowed", "value": "/" }
+      ]
+    }
+  ]
+}

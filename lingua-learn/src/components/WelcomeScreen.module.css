@@ -5,6 +5,8 @@
   justify-content: center;
   background: linear-gradient(135deg, #58cc02 0%, #1cb0f6 100%);
   padding: 24px;
+  /* Ensure content clears the fixed install banner when it appears */
+  padding-top: max(24px, calc(env(safe-area-inset-top) + 60px));
 }
 
 .card {
@@ -59,6 +61,49 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.installBanner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--text);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  padding-top: max(12px, env(safe-area-inset-top));
+  font-size: 0.88rem;
+  font-weight: 600;
+  z-index: 1000;
+}
+
+.installIcon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.installText {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.installDismiss {
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  flex-shrink: 0;
+  opacity: 0.7;
+  font-family: inherit;
+}
+
+.installDismiss:hover {
+  opacity: 1;
 }
 
 .existing {

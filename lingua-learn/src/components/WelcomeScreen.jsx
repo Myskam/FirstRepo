@@ -2,8 +2,21 @@ import { useState } from 'react';
 import styles from './WelcomeScreen.module.css';
 import { toast } from './Toast';
 
+function shouldShowInstallHint() {
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.navigator.standalone === true;
+  const dismissed = localStorage.getItem('ll_install_dismissed') === 'true';
+  return isIOS && !isStandalone && !dismissed;
+}
+
 export default function WelcomeScreen({ onStart, savedCourse, onLoadGermanTutor, hasGermanCache }) {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('ll_apiKey') ?? '');
+  const [showInstallHint, setShowInstallHint] = useState(() => shouldShowInstallHint());
+
+  function dismissInstallHint() {
+    localStorage.setItem('ll_install_dismissed', 'true');
+    setShowInstallHint(false);
+  }
 
   function handleStart() {
     if (!apiKey.trim()) { toast('Please enter your Claude API key'); return; }
@@ -13,6 +26,23 @@ export default function WelcomeScreen({ onStart, savedCourse, onLoadGermanTutor,
 
   return (
     <div className={styles.screen}>
+      {showInstallHint && (
+        <div className={styles.installBanner}>
+          <span className={styles.installIcon}>📲</span>
+          <span className={styles.installText}>
+            Install LinguaLearn: tap <strong>Share</strong> then{' '}
+            <strong>Add to Home Screen</strong> for offline access.
+          </span>
+          <button
+            className={styles.installDismiss}
+            onClick={dismissInstallHint}
+            aria-label="Dismiss install hint"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       <div className={styles.card}>
         <span className={styles.owl}>🦉</span>
         <h1 className={styles.title}>LinguaLearn</h1>
