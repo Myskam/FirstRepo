@@ -54,6 +54,8 @@ function matchExercise(items) {
   };
 }
 
+import { getTopWeakWords } from './wordStats';
+
 export function generateExercises(unit, lessonType, language) {
   const vocab     = (unit.vocabulary ?? []).filter(v => v.target && v.native);
   const phrases   = (unit.phrases   ?? []).filter(p => p.target && p.native);
@@ -101,16 +103,20 @@ export function generateExercises(unit, lessonType, language) {
     }
 
     case 'review': {
-      const items = shuffle(pool).slice(0, 12);
-      items.forEach((item, i) => {
-        if (i % 3 === 0) {
-          const mc = multiChoice(item, pool, language);
-          exercises.push(mc ?? typeAnswer(item));
-        } else {
-          exercises.push(typeAnswer(item));
-        }
-      });
-      if (pool.length >= 3) exercises.splice(4, 0, matchExercise(pool));
+      const weakWords = getTopWeakWords(unit.vocabulary ?? [], 12);
+      const useWeak = weakWords.length >= 4;
+      const base = useWeak ? weakWords : shuffle(pool).slice(0, 12);
+      base.forEach(item => exercises.push(typeAnswer(item)));
+      if (!useWeak) {
+        // Mix in some multi-choice for variety
+        exercises.forEach((ex, i) => {
+          if (i % 3 === 0) {
+            const mc = multiChoice(base[i], pool, language);
+            if (mc) exercises[i] = mc;
+          }
+        });
+      }
+      if (pool.length >= 3) exercises.splice(Math.min(4, exercises.length), 0, matchExercise(pool));
       break;
     }
 

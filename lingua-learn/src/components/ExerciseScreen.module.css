@@ -20,7 +20,7 @@
 
 .exitBtn { width: auto; padding: 4px 10px; font-size: 1.2rem; color: var(--gray-400); }
 
-.hearts { display: flex; gap: 3px; font-size: 1.1rem; flex-shrink: 0; }
+.counter { font-size: 0.82rem; font-weight: 800; color: var(--gray-400); white-space: nowrap; flex-shrink: 0; }
 
 /* Body */
 .body {
@@ -42,13 +42,36 @@
   margin-bottom: 12px;
 }
 
+.questionRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
 .question {
   font-size: 2.2rem;
   font-weight: 900;
-  margin-bottom: 32px;
   line-height: 1.2;
+  flex: 1;
 }
 @media (max-width: 480px) { .question { font-size: 1.6rem; } }
+
+.speakBtn {
+  background: none;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.15s;
+}
+.speakBtn:hover { border-color: var(--blue); }
 
 /* Multiple choice */
 .optionsGrid {
@@ -101,6 +124,18 @@
   text-align: center;
   transition: border-color 0.15s, background 0.15s;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.matchSpeak {
+  font-size: 0.85rem;
+  opacity: 0.6;
+  flex-shrink: 0;
+  cursor: pointer;
+  line-height: 1;
 }
 .matchItem:hover:not(:disabled) { border-color: var(--blue); background: var(--blue-light); }
 .matchSelected { border-color: var(--blue);  background: var(--blue-light);  color: var(--blue-dark); }
@@ -124,3 +159,34 @@
 .msgWrong    { color: var(--red-dark);   }
 
 .feedbackDetail { font-size: 0.88rem; color: var(--gray-400); margin-bottom: 14px; }
+
+.explainWrap { margin-bottom: 12px; }
+
+.explainBtn {
+  background: none;
+  border: none;
+  color: var(--red-dark);
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.explainLoading {
+  font-size: 0.85rem;
+  color: var(--gray-400);
+  font-style: italic;
+}
+
+.explanation {
+  background: rgba(255,255,255,0.7);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text);
+  margin-top: 6px;
+}

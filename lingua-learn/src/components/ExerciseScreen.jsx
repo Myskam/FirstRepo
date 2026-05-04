@@ -1,37 +1,60 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { generateExercises, isCorrectAnswer, shuffle } from '../utils/exerciseGenerator';
+import { speak, isTTSSupported } from '../utils/tts';
+import { recordAnswer } from '../utils/wordStats';
+import { explainAnswer } from '../utils/claude';
+import GrammarTip from './GrammarTip';
 import styles from './ExerciseScreen.module.css';
 
-const MAX_HEARTS = 5;
 const XP_PER_CORRECT = 10;
 
 export default function ExerciseScreen({ unit, lessonType, language, onComplete, onExit }) {
   const exercises = useRef(generateExercises(unit, lessonType, language));
+  const apiKey = localStorage.getItem('ll_apiKey') ?? '';
 
-  const [idx, setIdx]         = useState(0);
-  const [hearts, setHearts]   = useState(MAX_HEARTS);
-  const [answered, setAnswered] = useState(false);
-  const [correct, setCorrect]   = useState(false);
-  const [detail, setDetail]     = useState('');
+  const [idx, setIdx]               = useState(0);
+  const [answered, setAnswered]     = useState(false);
+  const [correct, setCorrect]       = useState(false);
+  const [detail, setDetail]         = useState('');
   const [correctCount, setCorrectCount] = useState(0);
   const [wrongCount,   setWrongCount]   = useState(0);
   const [lessonXP,     setLessonXP]     = useState(0);
-  const [anim, setAnim] = useState('');
+  const [anim, setAnim]             = useState('');
+  const [explanation, setExplanation] = useState('');
+  const [loadingExplain, setLoadingExplain] = useState(false);
+  const [lastUserAnswer, setLastUserAnswer] = useState('');
 
-  // Answers state for current exercise
   const [selectedOption, setSelectedOption] = useState(null);
-  const [typedAnswer, setTypedAnswer]       = useState('');
-  // Match state
-  const [matchLeft,  setMatchLeft]  = useState(null); // { side:'target'|'native', id }
+  const [typedAnswer,    setTypedAnswer]    = useState('');
+  const [matchLeft,  setMatchLeft]  = useState(null);
   const [matchDone,  setMatchDone]  = useState(new Set());
   const [matchWrong, setMatchWrong] = useState(new Set());
 
   const inputRef = useRef();
-  const ex = exercises.current[idx];
+  const ex    = exercises.current[idx];
   const total = exercises.current.length;
   const progress = (idx / total) * 100;
+  const ttsOk = isTTSSupported();
 
-  // Focus text input when exercise changes
+  // Derive which text is in target language for TTS
+  function targetText() {
+    if (!ex) return '';
+    if (ex.type === 'typeAnswer') return ex.question;
+    if (ex.type === 'multiChoice') {
+      return ex.prompt === 'What does this mean?' ? ex.question : ex.correct;
+    }
+    return '';
+  }
+
+  // Auto-play target word on each new exercise (typeAnswer / "What does this mean?" only)
+  useEffect(() => {
+    if (!ex || !ttsOk) return;
+    const t = targetText();
+    if (t && (ex.type === 'typeAnswer' || ex.prompt === 'What does this mean?')) {
+      speak(t, language);
+    }
+  }, [idx]);
+
   useEffect(() => {
     if (ex?.type === 'typeAnswer') {
       setTimeout(() => inputRef.current?.focus(), 80);
@@ -44,9 +67,10 @@ export default function ExerciseScreen({ unit, lessonType, language, onComplete,
     setMatchLeft(null);
     setMatchDone(new Set());
     setMatchWrong(new Set());
+    setExplanation('');
+    setLastUserAnswer('');
   }, [idx]);
 
-  // Keyboard: Enter to continue, 1-4 for options
   useEffect(() => {
     function onKey(e) {
       if (answered && e.key === 'Enter') { advance(); return; }
@@ -67,86 +91,88 @@ export default function ExerciseScreen({ unit, lessonType, language, onComplete,
     requestAnimationFrame(() => setAnim(name));
   }
 
-  function submitResult(isCorrect, correctAnswer) {
+  function submitResult(isCorrect, correctAnswer, userAnswer) {
     setAnswered(true);
     setCorrect(isCorrect);
+    setDetail(correctAnswer);
+    setLastUserAnswer(userAnswer ?? '');
+    // Track per-word stats for SRS
+    if (ex.type !== 'match') recordAnswer(correctAnswer, isCorrect);
     if (isCorrect) {
       setCorrectCount(c => c + 1);
       setLessonXP(x => x + XP_PER_CORRECT);
       triggerAnim('anim-pop');
     } else {
-      const newHearts = hearts - 1;
       setWrongCount(w => w + 1);
-      setHearts(newHearts);
       triggerAnim('anim-shake');
-      if (newHearts <= 0) {
-        setTimeout(() => finish(correctCount, wrongCount + 1, lessonXP), 1200);
-      }
     }
-    setDetail(correctAnswer);
   }
 
   function submitMultiChoice(option) {
     if (answered) return;
     setSelectedOption(option);
-    submitResult(option === ex.correct, ex.correct);
+    submitResult(option === ex.correct, ex.correct, option);
   }
 
   function submitTypeAnswer() {
     if (answered || !typedAnswer.trim()) return;
-    submitResult(isCorrectAnswer(typedAnswer, ex.correct), ex.correct);
+    submitResult(isCorrectAnswer(typedAnswer, ex.correct), ex.correct, typedAnswer);
   }
 
   function handleMatchTap(side, id) {
     if (matchDone.has(id)) return;
-
-    if (!matchLeft) {
-      setMatchLeft({ side, id });
-      return;
-    }
-
-    if (matchLeft.side === side) {
-      // Same column — switch selection
-      setMatchLeft({ side, id });
-      return;
-    }
+    if (!matchLeft) { setMatchLeft({ side, id }); return; }
+    if (matchLeft.side === side) { setMatchLeft({ side, id }); return; }
 
     const targetId = side === 'target' ? id : matchLeft.id;
     const nativeId = side === 'native' ? id : matchLeft.id;
 
     if (targetId === nativeId) {
-      // Correct pair
       const nextDone = new Set([...matchDone, targetId]);
       setMatchDone(nextDone);
       setMatchLeft(null);
       if (nextDone.size === ex.pairs.length) {
-        setTimeout(() => submitResult(true, ''), 300);
+        setTimeout(() => submitResult(true, '', ''), 300);
       }
     } else {
-      // Wrong
       const wrongIds = new Set([matchLeft.id, id]);
       setMatchWrong(wrongIds);
       setMatchLeft(null);
       setTimeout(() => setMatchWrong(new Set()), 600);
-      setHearts(h => {
-        const next = h - 1;
-        if (next <= 0) setTimeout(() => finish(correctCount, wrongCount + 1, lessonXP), 900);
-        return next;
-      });
       setWrongCount(w => w + 1);
     }
   }
 
   function advance() {
-    if (idx + 1 >= total || hearts <= 0) {
-      finish(correctCount, wrongCount, lessonXP);
+    if (idx + 1 >= total) {
+      onComplete({ correctCount, wrongCount, lessonXP });
     } else {
       setIdx(i => i + 1);
     }
   }
 
-  function finish(cc, wc, xp) {
-    onComplete({ correctCount: cc, wrongCount: wc, lessonXP: xp });
+  function finish() {
+    onComplete({ correctCount, wrongCount, lessonXP });
+  }
+
+  async function handleExplain() {
+    if (explanation || loadingExplain) return;
+    setLoadingExplain(true);
+    try {
+      const text = await explainAnswer(
+        apiKey,
+        language,
+        ex.question ?? ex.prompt,
+        detail,
+        lastUserAnswer,
+        unit.grammar ?? [],
+      );
+      setExplanation(text);
+    } catch {
+      setExplanation('Could not load explanation — check your connection.');
+    } finally {
+      setLoadingExplain(false);
+    }
   }
 
   function handleExit() {
@@ -156,7 +182,7 @@ export default function ExerciseScreen({ unit, lessonType, language, onComplete,
 
   if (!ex) return null;
 
-  const heartsArr = Array.from({ length: MAX_HEARTS }, (_, i) => i < hearts);
+  const grammar = unit.grammar ?? [];
 
   return (
     <div className={styles.screen}>
@@ -166,11 +192,7 @@ export default function ExerciseScreen({ unit, lessonType, language, onComplete,
         <div className="progress-track">
           <div className="progress-fill" style={{ width: `${progress}%` }} />
         </div>
-        <div className={styles.hearts}>
-          {heartsArr.map((full, i) => (
-            <span key={i}>{full ? '❤️' : '🖤'}</span>
-          ))}
-        </div>
+        <span className={styles.counter}>{idx + 1} / {total}</span>
       </div>
 
       {/* Body */}
@@ -181,6 +203,8 @@ export default function ExerciseScreen({ unit, lessonType, language, onComplete,
             selected={selectedOption}
             answered={answered}
             onSelect={submitMultiChoice}
+            language={language}
+            ttsOk={ttsOk}
           />
         )}
         {ex.type === 'typeAnswer' && (
@@ -192,6 +216,8 @@ export default function ExerciseScreen({ unit, lessonType, language, onComplete,
             correct={correct}
             inputRef={inputRef}
             onSubmit={submitTypeAnswer}
+            language={language}
+            ttsOk={ttsOk}
           />
         )}
         {ex.type === 'match' && (
@@ -201,7 +227,14 @@ export default function ExerciseScreen({ unit, lessonType, language, onComplete,
             done={matchDone}
             wrong={matchWrong}
             onTap={handleMatchTap}
+            language={language}
+            ttsOk={ttsOk}
           />
+        )}
+
+        {/* Grammar tips — shown above answer area when not yet answered */}
+        {!answered && grammar.length > 0 && (
+          <GrammarTip grammar={grammar} question={ex.question} correct={ex.correct} />
         )}
       </div>
 
@@ -217,6 +250,24 @@ export default function ExerciseScreen({ unit, lessonType, language, onComplete,
           {correct && detail && (
             <p className={styles.feedbackDetail}>{detail}</p>
           )}
+
+          {/* Explain This — shown on wrong answers */}
+          {!correct && (
+            <div className={styles.explainWrap}>
+              {!explanation && !loadingExplain && (
+                <button className={styles.explainBtn} onClick={handleExplain}>
+                  Explain this →
+                </button>
+              )}
+              {loadingExplain && (
+                <span className={styles.explainLoading}>Loading explanation…</span>
+              )}
+              {explanation && (
+                <p className={styles.explanation}>{explanation}</p>
+              )}
+            </div>
+          )}
+
           <button
             className={`btn ${correct ? 'btn-primary' : 'btn-danger'}`}
             onClick={advance}
@@ -244,11 +295,31 @@ export default function ExerciseScreen({ unit, lessonType, language, onComplete,
 
 /* ── Sub-components ───────────────────────────────────────── */
 
-function MultiChoice({ exercise, selected, answered, onSelect }) {
+function SpeakBtn({ text, language, ttsOk }) {
+  if (!ttsOk || !text) return null;
+  return (
+    <button
+      className={styles.speakBtn}
+      onClick={e => { e.stopPropagation(); speak(text, language); }}
+      aria-label="Play pronunciation"
+      title="Play pronunciation"
+    >
+      🔊
+    </button>
+  );
+}
+
+function MultiChoice({ exercise, selected, answered, onSelect, language, ttsOk }) {
+  const isTargetQuestion = exercise.prompt === 'What does this mean?';
+  const speakText = isTargetQuestion ? exercise.question : exercise.correct;
+
   return (
     <>
       <p className={styles.prompt}>{exercise.prompt}</p>
-      <p className={styles.question}>{exercise.question}</p>
+      <div className={styles.questionRow}>
+        <p className={styles.question}>{exercise.question}</p>
+        {ttsOk && <SpeakBtn text={speakText} language={language} ttsOk={ttsOk} />}
+      </div>
       <div className={styles.optionsGrid}>
         {exercise.options.map((opt, i) => {
           let cls = styles.option;
@@ -274,11 +345,14 @@ function MultiChoice({ exercise, selected, answered, onSelect }) {
   );
 }
 
-function TypeAnswer({ exercise, value, onChange, answered, correct, inputRef, onSubmit }) {
+function TypeAnswer({ exercise, value, onChange, answered, correct, inputRef, onSubmit, language, ttsOk }) {
   return (
     <>
       <p className={styles.prompt}>{exercise.prompt}</p>
-      <p className={styles.question}>{exercise.question}</p>
+      <div className={styles.questionRow}>
+        <p className={styles.question}>{exercise.question}</p>
+        <SpeakBtn text={exercise.question} language={language} ttsOk={ttsOk} />
+      </div>
       <input
         ref={inputRef}
         type="text"
@@ -296,7 +370,7 @@ function TypeAnswer({ exercise, value, onChange, answered, correct, inputRef, on
   );
 }
 
-function MatchPairs({ exercise, selected, done, wrong, onTap }) {
+function MatchPairs({ exercise, selected, done, wrong, onTap, language, ttsOk }) {
   const [leftItems]  = useState(() => shuffle(exercise.pairs));
   const [rightItems] = useState(() => shuffle(exercise.pairs));
 
@@ -316,7 +390,17 @@ function MatchPairs({ exercise, selected, done, wrong, onTap }) {
         <div className={styles.matchCol}>
           {leftItems.map(p => (
             <button key={p.id} className={itemClass('target', p.id)} onClick={() => !done.has(p.id) && onTap('target', p.id)}>
-              {p.target}
+              <span>{p.target}</span>
+              {ttsOk && (
+                <span
+                  className={styles.matchSpeak}
+                  onClick={e => { e.stopPropagation(); speak(p.target, language); }}
+                  role="button"
+                  aria-label="Play pronunciation"
+                >
+                  🔊
+                </span>
+              )}
             </button>
           ))}
         </div>

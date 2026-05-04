@@ -6,9 +6,10 @@ const LESSON_TYPES = [
   { id: 'phrases',    icon: '💬', title: 'Phrases',      desc: 'Practise common expressions'                    },
   { id: 'translate',  icon: '✍️', title: 'Translate',    desc: 'Type translations from scratch'                 },
   { id: 'review',     icon: '🔄', title: 'Review All',   desc: 'Mixed practice across everything'               },
+  { id: 'converse',   icon: '🗣️', title: 'Converse',     desc: 'Free conversation practice with AI'             },
 ];
 
-export default function LessonScreen({ unit, onStart, onBack }) {
+export default function LessonScreen({ unit, onStart, onBack, onConverse }) {
   const vocab   = unit.vocabulary?.length ?? 0;
   const phrases = unit.phrases?.length    ?? 0;
 
@@ -17,6 +18,7 @@ export default function LessonScreen({ unit, onStart, onBack }) {
     if (t.id === 'match'      && vocab + phrases < 3)  return false;
     if (t.id === 'phrases'    && phrases < 2)          return false;
     if (t.id === 'translate'  && vocab + phrases < 2)  return false;
+    if (t.id === 'converse'   && vocab < 3)            return false;
     return true;
   });
 
@@ -34,7 +36,7 @@ export default function LessonScreen({ unit, onStart, onBack }) {
 
         <div className={styles.grid}>
           {available.map(t => (
-            <button key={t.id} className={styles.typeCard} onClick={() => onStart(t.id)}>
+            <button key={t.id} className={styles.typeCard} onClick={() => t.id === 'converse' ? onConverse() : onStart(t.id)}>
               <span className={styles.typeIcon}>{t.icon}</span>
               <strong>{t.title}</strong>
               <span className={styles.typeDesc}>{t.desc}</span>

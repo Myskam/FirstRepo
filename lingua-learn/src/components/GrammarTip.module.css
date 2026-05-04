@@ -1,0 +1,51 @@
+.wrap {
+  margin: 8px 0 12px;
+}
+
+.toggle {
+  background: none;
+  border: 1.5px solid var(--green);
+  border-radius: 20px;
+  color: var(--green);
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: inherit;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.toggle:hover {
+  background: rgba(88, 204, 2, 0.08);
+}
+
+.list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  background: #f0fce8;
+  border-left: 3px solid var(--green);
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rule {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.example {
+  font-size: 0.82rem;
+  color: var(--gray-400);
+  font-style: italic;
+}

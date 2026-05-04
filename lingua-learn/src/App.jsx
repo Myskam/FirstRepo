@@ -5,7 +5,8 @@ import AnalyzingScreen from './components/AnalyzingScreen';
 import CourseScreen    from './components/CourseScreen';
 import LessonScreen    from './components/LessonScreen';
 import ExerciseScreen  from './components/ExerciseScreen';
-import CompleteScreen  from './components/CompleteScreen';
+import CompleteScreen      from './components/CompleteScreen';
+import ConversationScreen  from './components/ConversationScreen';
 import Toast, { useToast, toast } from './components/Toast';
 import { analyzeImage } from './utils/claude';
 import { buildCourse }  from './utils/courseBuilder';
@@ -181,7 +182,16 @@ export default function App() {
         <LessonScreen
           unit={course.units[unitIdx]}
           onStart={handleStartLesson}
+          onConverse={() => setScreen('conversation')}
           onBack={() => setScreen('course')}
+        />
+      )}
+      {screen === 'conversation' && course && (
+        <ConversationScreen
+          unit={course.units[unitIdx]}
+          language={course.language}
+          apiKey={apiKey}
+          onExit={() => setScreen('lesson')}
         />
       )}
       {screen === 'exercise' && course && (

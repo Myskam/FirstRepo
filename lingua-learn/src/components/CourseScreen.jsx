@@ -1,5 +1,6 @@
 import styles from './CourseScreen.module.css';
 import { toast } from './Toast';
+import { getWeakWords } from '../utils/wordStats';
 
 export default function CourseScreen({ course, totalXP, streak, onSelectUnit, onAddMore, onReset }) {
   const completed = course.units.filter(u => u.completed).length;
@@ -46,7 +47,14 @@ export default function CourseScreen({ course, totalXP, streak, onSelectUnit, on
                 {unit.completed ? '✅' : locked ? '🔒' : unit.icon}
               </div>
               <div className={styles.unitInfo}>
-                <h3>{unit.title}</h3>
+                <div className={styles.unitTitleRow}>
+                  <h3>{unit.title}</h3>
+                  {getWeakWords(unit.vocabulary ?? []).length > 0 && (
+                    <span className={styles.weakBadge}>
+                      ⚠ {getWeakWords(unit.vocabulary ?? []).length} weak
+                    </span>
+                  )}
+                </div>
                 <p>
                   {unit.vocabulary?.length ?? 0} words
                   {unit.phrases?.length ? ` · ${unit.phrases.length} phrases` : ''}
