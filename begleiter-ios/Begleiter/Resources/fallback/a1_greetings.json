@@ -1,0 +1,56 @@
+{
+  "exercises": [
+    {
+      "id": "a1_greetings_f1",
+      "type": "multiple_choice",
+      "topic": "a1_greetings",
+      "question": "How do you say 'Good morning' in German?",
+      "options": ["Guten Morgen", "Guten Abend", "Gute Nacht", "Guten Tag"],
+      "correct": "Guten Morgen",
+      "hint": null,
+      "explanation": "'Guten Morgen' means 'Good morning'. 'Guten Tag' is 'Good day', 'Guten Abend' is 'Good evening', and 'Gute Nacht' is 'Good night'."
+    },
+    {
+      "id": "a1_greetings_f2",
+      "type": "multiple_choice",
+      "topic": "a1_greetings",
+      "question": "How do you ask 'How are you?' informally?",
+      "options": ["Wie geht es Ihnen?", "Wie heißt du?", "Wie geht's?", "Woher kommst du?"],
+      "correct": "Wie geht's?",
+      "hint": null,
+      "explanation": "'Wie geht's?' is the informal shortening of 'Wie geht es dir?' (How are you?). 'Wie geht es Ihnen?' is the formal version."
+    },
+    {
+      "id": "a1_greetings_f3",
+      "type": "fill_blank",
+      "topic": "a1_greetings",
+      "sentence": "___, ich bin Anna. Wie heißt du?",
+      "blank": "Hallo",
+      "correct": "Hallo",
+      "hint": "A casual German greeting",
+      "explanation": "'Hallo' is the standard informal greeting, equivalent to 'Hello' in English."
+    },
+    {
+      "id": "a1_greetings_f4",
+      "type": "match_pairs",
+      "topic": "a1_greetings",
+      "pairs": [
+        { "left": "Guten Morgen", "right": "Good morning" },
+        { "left": "Auf Wiedersehen", "right": "Goodbye" },
+        { "left": "Bitte", "right": "Please / You're welcome" },
+        { "left": "Danke", "right": "Thank you" }
+      ],
+      "explanation": "These are essential German greetings and polite expressions you'll use every day."
+    },
+    {
+      "id": "a1_greetings_f5",
+      "type": "reorder_words",
+      "topic": "a1_greetings",
+      "words": ["Mein", "Name", "ist", "Thomas"],
+      "correct": "Mein Name ist Thomas",
+      "question": "How do you say 'My name is Thomas'?",
+      "hint": "Start with 'Mein'",
+      "explanation": "'Mein Name ist...' literally means 'My name is...'. You can also say 'Ich heiße Thomas' (I am called Thomas)."
+    }
+  ]
+}

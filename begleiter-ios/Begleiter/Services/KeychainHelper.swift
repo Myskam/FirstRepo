@@ -1,0 +1,50 @@
+import Security
+import Foundation
+
+enum KeychainHelper {
+    private static let service = "com.begleiter.app"
+    private static let apiKeyAccount = "anthropic_api_key"
+
+    static func saveAPIKey(_ key: String) {
+        guard let data = key.data(using: .utf8) else { return }
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrService: service,
+            kSecAttrAccount: apiKeyAccount
+        ]
+        SecItemDelete(query as CFDictionary)
+        let attributes: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrService: service,
+            kSecAttrAccount: apiKeyAccount,
+            kSecValueData: data,
+            kSecAttrAccessible: kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+        ]
+        SecItemAdd(attributes as CFDictionary, nil)
+    }
+
+    static func loadAPIKey() -> String? {
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrService: service,
+            kSecAttrAccount: apiKeyAccount,
+            kSecReturnData: true,
+            kSecMatchLimit: kSecMatchLimitOne
+        ]
+        var result: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        guard status == errSecSuccess,
+              let data = result as? Data,
+              let key = String(data: data, encoding: .utf8) else { return nil }
+        return key
+    }
+
+    static func deleteAPIKey() {
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrService: service,
+            kSecAttrAccount: apiKeyAccount
+        ]
+        SecItemDelete(query as CFDictionary)
+    }
+}

@@ -1,0 +1,571 @@
+// !$*UTF8*$!
+{
+  archiveVersion = 1;
+  classes = {
+  };
+  objectVersion = 56;
+  objects = {
+
+/* Begin PBXBuildFile section */
+		000000000000000000000020 /* BegleiterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001F /* BegleiterApp.swift */; };
+		000000000000000000000022 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000021 /* ContentView.swift */; };
+		000000000000000000000024 /* TaxonomyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000023 /* TaxonomyModels.swift */; };
+		000000000000000000000026 /* ProfileModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000025 /* ProfileModels.swift */; };
+		000000000000000000000028 /* ExerciseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000027 /* ExerciseModels.swift */; };
+		00000000000000000000002A /* SessionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000029 /* SessionModels.swift */; };
+		00000000000000000000002C /* HapticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002B /* HapticsService.swift */; };
+		00000000000000000000002E /* TTSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002D /* TTSService.swift */; };
+		000000000000000000000030 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000002F /* NotificationService.swift */; };
+		000000000000000000000032 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000031 /* KeychainHelper.swift */; };
+		000000000000000000000034 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000033 /* APIService.swift */; };
+		000000000000000000000036 /* TaxonomyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000035 /* TaxonomyService.swift */; };
+		000000000000000000000038 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000037 /* ProfileService.swift */; };
+		00000000000000000000003A /* SessionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000039 /* SessionService.swift */; };
+		00000000000000000000003C /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003B /* ProfileViewModel.swift */; };
+		00000000000000000000003E /* SessionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003D /* SessionViewModel.swift */; };
+		000000000000000000000040 /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000003F /* BadgeView.swift */; };
+		000000000000000000000042 /* StreakBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000041 /* StreakBadgeView.swift */; };
+		000000000000000000000044 /* ProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000043 /* ProgressBarView.swift */; };
+		000000000000000000000046 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000045 /* LoadingView.swift */; };
+		000000000000000000000048 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000047 /* ErrorView.swift */; };
+		00000000000000000000004A /* FeedbackBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000049 /* FeedbackBanner.swift */; };
+		00000000000000000000004C /* TopicStatusGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000004B /* TopicStatusGridView.swift */; };
+		00000000000000000000004E /* TopicChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000004D /* TopicChecklistView.swift */; };
+		000000000000000000000050 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000004F /* SetupView.swift */; };
+		000000000000000000000052 /* MultipleChoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000051 /* MultipleChoiceView.swift */; };
+		000000000000000000000054 /* FillBlankView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000053 /* FillBlankView.swift */; };
+		000000000000000000000056 /* MatchPairsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000055 /* MatchPairsView.swift */; };
+		000000000000000000000058 /* ReorderWordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000057 /* ReorderWordsView.swift */; };
+		00000000000000000000005A /* OnboardingWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000059 /* OnboardingWelcomeView.swift */; };
+		00000000000000000000005C /* ContextStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000005B /* ContextStepView.swift */; };
+		00000000000000000000005E /* LevelStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000005D /* LevelStepView.swift */; };
+		000000000000000000000060 /* CoverageStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000005F /* CoverageStepView.swift */; };
+		000000000000000000000062 /* DiagnosticStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000061 /* DiagnosticStepView.swift */; };
+		000000000000000000000064 /* OnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000063 /* OnboardingFlow.swift */; };
+		000000000000000000000066 /* SessionStartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000065 /* SessionStartView.swift */; };
+		000000000000000000000068 /* ActiveSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000067 /* ActiveSessionView.swift */; };
+		00000000000000000000006A /* SessionSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000069 /* SessionSummaryView.swift */; };
+		00000000000000000000006C /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006B /* DashboardView.swift */; };
+		00000000000000000000006E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006D /* SettingsView.swift */; };
+		000000000000000000000070 /* taxonomy.json in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000006F /* taxonomy.json */; };
+		000000000000000000000072 /* a1_greetings.json in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000071 /* a1_greetings.json */; };
+		00000000000000000000001C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001B /* Assets.xcassets */; };
+		00000000000000000000001E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001D /* PrivacyInfo.xcprivacy */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		000000000000000000000003 /* Begleiter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Begleiter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00000000000000000000001A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		00000000000000000000001B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		00000000000000000000001D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		00000000000000000000001F /* BegleiterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BegleiterApp.swift; sourceTree = "<group>"; };
+		000000000000000000000021 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		000000000000000000000023 /* TaxonomyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxonomyModels.swift; sourceTree = "<group>"; };
+		000000000000000000000025 /* ProfileModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModels.swift; sourceTree = "<group>"; };
+		000000000000000000000027 /* ExerciseModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseModels.swift; sourceTree = "<group>"; };
+		000000000000000000000029 /* SessionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionModels.swift; sourceTree = "<group>"; };
+		00000000000000000000002B /* HapticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsService.swift; sourceTree = "<group>"; };
+		00000000000000000000002D /* TTSService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSService.swift; sourceTree = "<group>"; };
+		00000000000000000000002F /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		000000000000000000000031 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
+		000000000000000000000033 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		000000000000000000000035 /* TaxonomyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxonomyService.swift; sourceTree = "<group>"; };
+		000000000000000000000037 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		000000000000000000000039 /* SessionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionService.swift; sourceTree = "<group>"; };
+		00000000000000000000003B /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		00000000000000000000003D /* SessionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionViewModel.swift; sourceTree = "<group>"; };
+		00000000000000000000003F /* BadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
+		000000000000000000000041 /* StreakBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakBadgeView.swift; sourceTree = "<group>"; };
+		000000000000000000000043 /* ProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBarView.swift; sourceTree = "<group>"; };
+		000000000000000000000045 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		000000000000000000000047 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
+		000000000000000000000049 /* FeedbackBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackBanner.swift; sourceTree = "<group>"; };
+		00000000000000000000004B /* TopicStatusGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicStatusGridView.swift; sourceTree = "<group>"; };
+		00000000000000000000004D /* TopicChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicChecklistView.swift; sourceTree = "<group>"; };
+		00000000000000000000004F /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
+		000000000000000000000051 /* MultipleChoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleChoiceView.swift; sourceTree = "<group>"; };
+		000000000000000000000053 /* FillBlankView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FillBlankView.swift; sourceTree = "<group>"; };
+		000000000000000000000055 /* MatchPairsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchPairsView.swift; sourceTree = "<group>"; };
+		000000000000000000000057 /* ReorderWordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderWordsView.swift; sourceTree = "<group>"; };
+		000000000000000000000059 /* OnboardingWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.swift; sourceTree = "<group>"; };
+		00000000000000000000005B /* ContextStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextStepView.swift; sourceTree = "<group>"; };
+		00000000000000000000005D /* LevelStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelStepView.swift; sourceTree = "<group>"; };
+		00000000000000000000005F /* CoverageStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverageStepView.swift; sourceTree = "<group>"; };
+		000000000000000000000061 /* DiagnosticStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticStepView.swift; sourceTree = "<group>"; };
+		000000000000000000000063 /* OnboardingFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlow.swift; sourceTree = "<group>"; };
+		000000000000000000000065 /* SessionStartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStartView.swift; sourceTree = "<group>"; };
+		000000000000000000000067 /* ActiveSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSessionView.swift; sourceTree = "<group>"; };
+		000000000000000000000069 /* SessionSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSummaryView.swift; sourceTree = "<group>"; };
+		00000000000000000000006B /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		00000000000000000000006D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		00000000000000000000006F /* taxonomy.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = taxonomy.json; sourceTree = "<group>"; };
+		000000000000000000000071 /* a1_greetings.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = a1_greetings.json; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		000000000000000000000013 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		000000000000000000000004 = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000000006 /* Begleiter */,
+				000000000000000000000005 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		000000000000000000000005 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000000003 /* Begleiter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		000000000000000000000006 /* Begleiter */ = {
+			isa = PBXGroup;
+			children = (
+				00000000000000000000001F /* BegleiterApp.swift */,
+				000000000000000000000021 /* ContentView.swift */,
+				000000000000000000000007 /* Models */,
+				000000000000000000000008 /* Services */,
+				000000000000000000000009 /* ViewModels */,
+				00000000000000000000000A /* Views */,
+				00000000000000000000000F /* Resources */,
+				00000000000000000000001B /* Assets.xcassets */,
+				00000000000000000000001A /* Info.plist */,
+				00000000000000000000001D /* PrivacyInfo.xcprivacy */,
+			);
+			path = Begleiter;
+			sourceTree = "<group>";
+		};
+		000000000000000000000007 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000000023 /* TaxonomyModels.swift */,
+				000000000000000000000025 /* ProfileModels.swift */,
+				000000000000000000000027 /* ExerciseModels.swift */,
+				000000000000000000000029 /* SessionModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		000000000000000000000008 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				00000000000000000000002B /* HapticsService.swift */,
+				00000000000000000000002D /* TTSService.swift */,
+				00000000000000000000002F /* NotificationService.swift */,
+				000000000000000000000031 /* KeychainHelper.swift */,
+				000000000000000000000033 /* APIService.swift */,
+				000000000000000000000035 /* TaxonomyService.swift */,
+				000000000000000000000037 /* ProfileService.swift */,
+				000000000000000000000039 /* SessionService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		000000000000000000000009 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				00000000000000000000003B /* ProfileViewModel.swift */,
+				00000000000000000000003D /* SessionViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		00000000000000000000000A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				00000000000000000000006B /* DashboardView.swift */,
+				00000000000000000000006D /* SettingsView.swift */,
+				00000000000000000000000B /* Components */,
+				00000000000000000000000C /* Quiz */,
+				00000000000000000000000D /* Onboarding */,
+				00000000000000000000000E /* Session */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		00000000000000000000000B /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				00000000000000000000003F /* BadgeView.swift */,
+				000000000000000000000041 /* StreakBadgeView.swift */,
+				000000000000000000000043 /* ProgressBarView.swift */,
+				000000000000000000000045 /* LoadingView.swift */,
+				000000000000000000000047 /* ErrorView.swift */,
+				000000000000000000000049 /* FeedbackBanner.swift */,
+				00000000000000000000004B /* TopicStatusGridView.swift */,
+				00000000000000000000004D /* TopicChecklistView.swift */,
+				00000000000000000000004F /* SetupView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		00000000000000000000000C /* Quiz */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000000051 /* MultipleChoiceView.swift */,
+				000000000000000000000053 /* FillBlankView.swift */,
+				000000000000000000000055 /* MatchPairsView.swift */,
+				000000000000000000000057 /* ReorderWordsView.swift */,
+			);
+			path = Quiz;
+			sourceTree = "<group>";
+		};
+		00000000000000000000000D /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000000059 /* OnboardingWelcomeView.swift */,
+				00000000000000000000005B /* ContextStepView.swift */,
+				00000000000000000000005D /* LevelStepView.swift */,
+				00000000000000000000005F /* CoverageStepView.swift */,
+				000000000000000000000061 /* DiagnosticStepView.swift */,
+				000000000000000000000063 /* OnboardingFlow.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		00000000000000000000000E /* Session */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000000065 /* SessionStartView.swift */,
+				000000000000000000000067 /* ActiveSessionView.swift */,
+				000000000000000000000069 /* SessionSummaryView.swift */,
+			);
+			path = Session;
+			sourceTree = "<group>";
+		};
+		00000000000000000000000F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				00000000000000000000006F /* taxonomy.json */,
+				000000000000000000000010 /* fallback */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		000000000000000000000010 /* fallback */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000000071 /* a1_greetings.json */,
+			);
+			path = fallback;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		000000000000000000000002 /* Begleiter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 000000000000000000000019 /* Build configuration list for PBXNativeTarget "Begleiter" */;
+			buildPhases = (
+				000000000000000000000011 /* Sources */,
+				000000000000000000000012 /* Resources */,
+				000000000000000000000013 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Begleiter;
+			productName = Begleiter;
+			productReference = 000000000000000000000003 /* Begleiter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		000000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					000000000000000000000002 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 000000000000000000000016 /* Build configuration list for PBXProject "Begleiter" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 000000000000000000000004;
+			productRefGroup = 000000000000000000000005 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				000000000000000000000002 /* Begleiter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		000000000000000000000012 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00000000000000000000001C /* Assets.xcassets in Resources */,
+				00000000000000000000001E /* PrivacyInfo.xcprivacy in Resources */,
+				000000000000000000000070 /* taxonomy.json in Resources */,
+				000000000000000000000072 /* a1_greetings.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		000000000000000000000011 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				000000000000000000000020 /* BegleiterApp.swift in Sources */,
+				000000000000000000000022 /* ContentView.swift in Sources */,
+				000000000000000000000024 /* TaxonomyModels.swift in Sources */,
+				000000000000000000000026 /* ProfileModels.swift in Sources */,
+				000000000000000000000028 /* ExerciseModels.swift in Sources */,
+				00000000000000000000002A /* SessionModels.swift in Sources */,
+				00000000000000000000002C /* HapticsService.swift in Sources */,
+				00000000000000000000002E /* TTSService.swift in Sources */,
+				000000000000000000000030 /* NotificationService.swift in Sources */,
+				000000000000000000000032 /* KeychainHelper.swift in Sources */,
+				000000000000000000000034 /* APIService.swift in Sources */,
+				000000000000000000000036 /* TaxonomyService.swift in Sources */,
+				000000000000000000000038 /* ProfileService.swift in Sources */,
+				00000000000000000000003A /* SessionService.swift in Sources */,
+				00000000000000000000003C /* ProfileViewModel.swift in Sources */,
+				00000000000000000000003E /* SessionViewModel.swift in Sources */,
+				000000000000000000000040 /* BadgeView.swift in Sources */,
+				000000000000000000000042 /* StreakBadgeView.swift in Sources */,
+				000000000000000000000044 /* ProgressBarView.swift in Sources */,
+				000000000000000000000046 /* LoadingView.swift in Sources */,
+				000000000000000000000048 /* ErrorView.swift in Sources */,
+				00000000000000000000004A /* FeedbackBanner.swift in Sources */,
+				00000000000000000000004C /* TopicStatusGridView.swift in Sources */,
+				00000000000000000000004E /* TopicChecklistView.swift in Sources */,
+				000000000000000000000050 /* SetupView.swift in Sources */,
+				000000000000000000000052 /* MultipleChoiceView.swift in Sources */,
+				000000000000000000000054 /* FillBlankView.swift in Sources */,
+				000000000000000000000056 /* MatchPairsView.swift in Sources */,
+				000000000000000000000058 /* ReorderWordsView.swift in Sources */,
+				00000000000000000000005A /* OnboardingWelcomeView.swift in Sources */,
+				00000000000000000000005C /* ContextStepView.swift in Sources */,
+				00000000000000000000005E /* LevelStepView.swift in Sources */,
+				000000000000000000000060 /* CoverageStepView.swift in Sources */,
+				000000000000000000000062 /* DiagnosticStepView.swift in Sources */,
+				000000000000000000000064 /* OnboardingFlow.swift in Sources */,
+				000000000000000000000066 /* SessionStartView.swift in Sources */,
+				000000000000000000000068 /* ActiveSessionView.swift in Sources */,
+				00000000000000000000006A /* SessionSummaryView.swift in Sources */,
+				00000000000000000000006C /* DashboardView.swift in Sources */,
+				00000000000000000000006E /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		000000000000000000000014 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = targeted;
+			};
+			name = Debug;
+		};
+		000000000000000000000015 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		000000000000000000000017 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Begleiter/Assets.xcassets\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Begleiter/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SWIFT_VERSION = 5.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.begleiter.app";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRINGS_FILE_OUTPUT_ENCODING = UTF-8;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		000000000000000000000018 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Begleiter/Assets.xcassets\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Begleiter/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SWIFT_VERSION = 5.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.begleiter.app";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRINGS_FILE_OUTPUT_ENCODING = UTF-8;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		000000000000000000000016 /* Build configuration list for PBXProject "Begleiter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000000000000000000000014 /* Debug */,
+				000000000000000000000015 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		000000000000000000000019 /* Build configuration list for PBXNativeTarget "Begleiter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000000000000000000000017 /* Debug */,
+				000000000000000000000018 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+  };
+  rootObject = 000000000000000000000001 /* Project object */;
+}
