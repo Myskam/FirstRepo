@@ -1,12 +1,21 @@
 import Foundation
 import Observation
 
-enum SessionPhase {
+enum SessionPhase: Equatable {
     case loading
     case active
     case feedback(isCorrect: Bool)
     case summary
     case error(Error)
+
+    static func == (lhs: SessionPhase, rhs: SessionPhase) -> Bool {
+        switch (lhs, rhs) {
+        case (.loading, .loading), (.active, .active), (.summary, .summary): return true
+        case (.feedback(let a), .feedback(let b)): return a == b
+        case (.error, .error): return true
+        default: return false
+        }
+    }
 }
 
 @Observable

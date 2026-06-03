@@ -139,11 +139,8 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Spacer()
-                    Button("Open Settings") {
-                        if let url = URL(string: UIApplication.openSettingsURLString) {
-                            UIApplication.shared.open(url)
-                        }
-                    }
+                    Link("Open Settings",
+                         destination: URL(string: UIApplication.openSettingsURLString)!)
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Color.accentColor)
                 }

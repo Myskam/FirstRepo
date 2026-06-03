@@ -5,6 +5,8 @@ import SwiftUI
 struct DashboardView: View {
     @Environment(ProfileViewModel.self) var profileVM
     @State private var showSettings = false
+    @State private var navigateToSession = false
+    @State private var sessionVM: SessionViewModel?
 
     // MARK: - Derived
 
@@ -49,6 +51,12 @@ struct DashboardView: View {
                 SettingsView()
                     .environment(profileVM)
             }
+            .navigationDestination(isPresented: $navigateToSession) {
+                if let vm = sessionVM {
+                    SessionStartView(sessionVM: vm)
+                        .environment(profileVM)
+                }
+            }
         }
     }
 
@@ -89,9 +97,10 @@ struct DashboardView: View {
             VStack(spacing: 0) {
                 Divider()
 
-                NavigationLink {
-                    SessionStartView(sessionVM: SessionViewModel(profileVM: profileVM))
-                        .environment(profileVM)
+                Button {
+                    HapticsService.shared.tap()
+                    sessionVM = SessionViewModel(profileVM: profileVM)
+                    navigateToSession = true
                 } label: {
                     HStack(spacing: 8) {
                         Image(systemName: "play.fill")

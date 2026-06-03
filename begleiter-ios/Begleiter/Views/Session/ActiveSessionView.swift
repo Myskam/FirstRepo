@@ -8,10 +8,10 @@ import SwiftUI
 struct ActiveSessionView: View {
     @Bindable var sessionVM: SessionViewModel
     @Environment(ProfileViewModel.self) var profileVM
+    @State private var showSummary = false
 
     // MARK: - Derived helpers
 
-    /// The correct answer string for the current exercise, used by FeedbackBanner.
     private var currentCorrectAnswer: String {
         guard let ex = sessionVM.currentExercise else { return "" }
         switch ex {
@@ -22,15 +22,8 @@ struct ActiveSessionView: View {
         }
     }
 
-    /// The explanation for the current exercise.
     private var currentExplanation: String {
         sessionVM.currentExercise?.explanation ?? ""
-    }
-
-    /// Whether the session is in the summary phase — drives navigation.
-    private var isShowingSummary: Bool {
-        if case .summary = sessionVM.phase { return true }
-        return false
     }
 
     // MARK: - Body
@@ -43,10 +36,10 @@ struct ActiveSessionView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(isSessionActive)
         .task { await sessionVM.loadSession() }
-        .navigationDestination(isPresented: Binding(
-            get: { isShowingSummary },
-            set: { if !$0 { sessionVM.reset() } }
-        )) {
+        .onChange(of: sessionVM.phase) { _, newPhase in
+            if case .summary = newPhase { showSummary = true }
+        }
+        .navigationDestination(isPresented: $showSummary) {
             if let summary = sessionVM.summary,
                let profile = profileVM.profile {
                 SessionSummaryView(
@@ -55,6 +48,9 @@ struct ActiveSessionView: View {
                     profile: profile
                 )
             }
+        }
+        .onDisappear {
+            if case .summary = sessionVM.phase { sessionVM.reset() }
         }
     }
 
