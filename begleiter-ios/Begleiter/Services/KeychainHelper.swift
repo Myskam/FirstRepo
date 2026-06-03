@@ -6,6 +6,10 @@ enum KeychainHelper {
     private static let apiKeyAccount = "anthropic_api_key"
 
     static func saveAPIKey(_ key: String) {
+        // UserDefaults primary (works in simulator without code signing)
+        UserDefaults.standard.set(key, forKey: "begleiter_api_key")
+
+        // Keychain secondary (works on physical devices)
         guard let data = key.data(using: .utf8) else { return }
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
@@ -24,6 +28,7 @@ enum KeychainHelper {
     }
 
     static func loadAPIKey() -> String? {
+        // Try Keychain first (physical device)
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
@@ -33,13 +38,18 @@ enum KeychainHelper {
         ]
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
-        guard status == errSecSuccess,
-              let data = result as? Data,
-              let key = String(data: data, encoding: .utf8) else { return nil }
-        return key
+        if status == errSecSuccess,
+           let data = result as? Data,
+           let key = String(data: data, encoding: .utf8),
+           !key.isEmpty {
+            return key
+        }
+        // Fall back to UserDefaults (simulator)
+        return UserDefaults.standard.string(forKey: "begleiter_api_key")
     }
 
     static func deleteAPIKey() {
+        UserDefaults.standard.removeObject(forKey: "begleiter_api_key")
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
