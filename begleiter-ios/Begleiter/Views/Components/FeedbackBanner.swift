@@ -21,6 +21,8 @@ struct FeedbackBanner: View {
     let correctAnswer: String
     let explanation: String
     let onContinue: () -> Void
+    var xpEarned: Int = 0
+    var combo: Int = 0
 
     // MARK: - Appearance
 
@@ -31,17 +33,32 @@ struct FeedbackBanner: View {
 
     private let foreground = Color.white
 
+    private var xpBadge: some View {
+        Text("+\(xpEarned) XP")
+            .font(.caption.weight(.bold))
+            .foregroundStyle(foreground)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(foreground.opacity(0.22), in: Capsule())
+    }
+
     // MARK: - Body
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
 
-            // ── Top row: result label + optional wrong-answer line + speaker ──
+            // ── Top row: result label + XP badge + speaker ──
             HStack(alignment: .top, spacing: 8) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(isCorrect ? "✓ Correct!" : "✗ Incorrect")
-                        .font(.headline.weight(.bold))
-                        .foregroundStyle(foreground)
+                    HStack(spacing: 8) {
+                        Text(isCorrect ? "✓ Correct!" : "✗ Incorrect")
+                            .font(.headline.weight(.bold))
+                            .foregroundStyle(foreground)
+
+                        if isCorrect && xpEarned > 0 {
+                            xpBadge
+                        }
+                    }
 
                     if !isCorrect {
                         Text("Correct answer: \(correctAnswer)")
@@ -72,6 +89,17 @@ struct FeedbackBanner: View {
                     .font(.subheadline)
                     .foregroundStyle(foreground.opacity(0.92))
                     .fixedSize(horizontal: false, vertical: true)
+            }
+
+            // ── Combo label ──
+            if isCorrect && combo >= 2 {
+                HStack(spacing: 4) {
+                    Image(systemName: "flame.fill")
+                        .font(.subheadline)
+                    Text("\(combo)× Combo!")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .foregroundStyle(foreground.opacity(0.9))
             }
 
             // ── Continue button ──

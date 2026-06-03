@@ -15,10 +15,12 @@ struct ActiveSessionView: View {
     private var currentCorrectAnswer: String {
         guard let ex = sessionVM.currentExercise else { return "" }
         switch ex {
-        case .multipleChoice(let e): return e.correct
-        case .fillBlank(let e):      return e.blank
-        case .matchPairs:            return ""
-        case .reorderWords(let e):   return e.correct
+        case .multipleChoice(let e):    return e.correct
+        case .fillBlank(let e):         return e.blank
+        case .matchPairs:               return ""
+        case .reorderWords(let e):      return e.correct
+        case .articleTap(let e):        return e.correct
+        case .sentenceCorrection(let e): return e.correction
         }
     }
 
@@ -45,7 +47,8 @@ struct ActiveSessionView: View {
                 SessionSummaryView(
                     summary: summary,
                     answers: sessionVM.answers,
-                    profile: profile
+                    profile: profile,
+                    totalXP: sessionVM.xp
                 )
             }
         }
@@ -76,7 +79,9 @@ struct ActiveSessionView: View {
                     explanation: currentExplanation,
                     onContinue: {
                         Task { await sessionVM.next() }
-                    }
+                    },
+                    xpEarned: sessionVM.lastAnswerXP,
+                    combo: sessionVM.combo
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .ignoresSafeArea(edges: .bottom)
@@ -100,11 +105,18 @@ struct ActiveSessionView: View {
     @ViewBuilder
     private var activeContent: some View {
         VStack(spacing: 0) {
-            // Progress bar
-            ProgressBarView(
-                current: sessionVM.currentIndex + 1,
-                total: max(sessionVM.exercises.count, 1)
-            )
+            // Progress bar + combo meter
+            VStack(spacing: 8) {
+                ProgressBarView(
+                    current: sessionVM.currentIndex + 1,
+                    total: max(sessionVM.exercises.count, 1)
+                )
+                ComboMeterView(
+                    combo: sessionVM.combo,
+                    xp: sessionVM.xp,
+                    lastXP: sessionVM.lastAnswerXP
+                )
+            }
             .padding(.horizontal, 20)
             .padding(.top, 12)
             .padding(.bottom, 24)
@@ -151,6 +163,16 @@ struct ActiveSessionView: View {
 
         case .reorderWords(let e):
             ReorderWordsView(exercise: e) { answer, correct in
+                Task { await sessionVM.recordAnswer(userAnswer: answer, isCorrect: correct) }
+            }
+
+        case .articleTap(let e):
+            ArticleTapView(exercise: e) { answer, correct in
+                Task { await sessionVM.recordAnswer(userAnswer: answer, isCorrect: correct) }
+            }
+
+        case .sentenceCorrection(let e):
+            SentenceCorrectionView(exercise: e) { answer, correct in
                 Task { await sessionVM.recordAnswer(userAnswer: answer, isCorrect: correct) }
             }
         }

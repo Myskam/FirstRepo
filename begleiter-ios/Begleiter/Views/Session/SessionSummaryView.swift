@@ -9,6 +9,7 @@ struct SessionSummaryView: View {
     let summary: SessionSummary
     let answers: [Answer]
     let profile: StudentProfile
+    var totalXP: Int = 0
 
     @Environment(\.dismiss) var dismiss
 
@@ -17,11 +18,33 @@ struct SessionSummaryView: View {
     private var correctCount: Int { answers.filter(\.isCorrect).count }
     private var totalCount: Int   { answers.count }
 
+    private var accuracy: Double {
+        totalCount > 0 ? Double(correctCount) / Double(totalCount) : 0
+    }
+
+    private var grade: String {
+        switch accuracy {
+        case 0.95...: return "S"
+        case 0.85...: return "A"
+        case 0.70...: return "B"
+        case 0.50...: return "C"
+        default:      return "D"
+        }
+    }
+
+    private var gradeColor: Color {
+        switch grade {
+        case "S":    return Color("BrandGreen")
+        case "A":    return Color("BrandGreen").opacity(0.85)
+        case "B":    return Color(.systemOrange)
+        case "C":    return Color(.systemOrange).opacity(0.75)
+        default:     return Color(.systemRed)
+        }
+    }
+
     private var scoreColor: Color {
-        guard totalCount > 0 else { return .secondary }
-        let ratio = Double(correctCount) / Double(totalCount)
-        if ratio >= 0.8 { return Color("BrandGreen") }
-        if ratio >= 0.5 { return Color(.systemOrange) }
+        if accuracy >= 0.8 { return Color("BrandGreen") }
+        if accuracy >= 0.5 { return Color(.systemOrange) }
         return Color(.systemRed)
     }
 
@@ -31,6 +54,7 @@ struct SessionSummaryView: View {
         ScrollView {
             VStack(spacing: 24) {
                 scoreSection
+                xpGradeRow
                 topicsSection
                 recommendationCard
                 streakSection
@@ -92,6 +116,49 @@ struct SessionSummaryView: View {
         .frame(maxWidth: .infinity)
         .background(Color(.secondarySystemGroupedBackground),
                     in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+    }
+
+    // MARK: - XP + Grade row
+
+    private var xpGradeRow: some View {
+        HStack(spacing: 12) {
+            // Grade badge
+            VStack(spacing: 4) {
+                Text(grade)
+                    .font(.system(size: 36, weight: .black, design: .rounded))
+                    .foregroundStyle(gradeColor)
+                Text("Grade")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 20)
+            .background(gradeColor.opacity(0.1), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .strokeBorder(gradeColor.opacity(0.3), lineWidth: 1.5)
+            )
+
+            // XP earned
+            VStack(spacing: 4) {
+                HStack(spacing: 4) {
+                    Image(systemName: "star.fill")
+                        .foregroundStyle(.yellow)
+                    Text("\(totalXP)")
+                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .foregroundStyle(.primary)
+                        .monospacedDigit()
+                        .contentTransition(.numericText())
+                }
+                Text("XP earned")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 20)
+            .background(Color(.secondarySystemGroupedBackground),
+                        in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        }
     }
 
     // MARK: - Topics section

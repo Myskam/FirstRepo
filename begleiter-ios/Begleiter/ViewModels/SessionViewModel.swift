@@ -27,6 +27,11 @@ final class SessionViewModel {
     var phase: SessionPhase = .loading
     var startTime: Date = Date()
 
+    // Gamification
+    var combo: Int = 0
+    var xp: Int = 0
+    var lastAnswerXP: Int = 0
+
     private let profileVM: ProfileViewModel
 
     init(profileVM: ProfileViewModel) {
@@ -67,15 +72,31 @@ final class SessionViewModel {
         let elapsed = Date().timeIntervalSince(startTime)
         let correctAnswer: String
         switch ex {
-        case .multipleChoice(let e): correctAnswer = e.correct
-        case .fillBlank(let e):      correctAnswer = e.blank
-        case .matchPairs:            correctAnswer = ""
-        case .reorderWords(let e):   correctAnswer = e.correct
+        case .multipleChoice(let e):    correctAnswer = e.correct
+        case .fillBlank(let e):         correctAnswer = e.blank
+        case .matchPairs:               correctAnswer = ""
+        case .reorderWords(let e):      correctAnswer = e.correct
+        case .articleTap(let e):        correctAnswer = e.correct
+        case .sentenceCorrection(let e): correctAnswer = e.correction
         }
         let answer = Answer(exerciseId: ex.id, topic: ex.topic, isCorrect: isCorrect,
                             userAnswer: userAnswer, correctAnswer: correctAnswer, timeSeconds: elapsed)
         answers.append(answer)
         await profileVM.transitionTopic(ex.topic, isCorrect: isCorrect)
+
+        // Combo + XP
+        if isCorrect {
+            combo += 1
+            let speedBonus = elapsed < 5.0 ? 5 : 0
+            let multiplier = min(combo, 4)
+            let earned = (10 + speedBonus) * multiplier
+            xp += earned
+            lastAnswerXP = earned
+        } else {
+            combo = 0
+            lastAnswerXP = 0
+        }
+
         phase = .feedback(isCorrect: isCorrect)
     }
 
@@ -110,5 +131,8 @@ final class SessionViewModel {
         answers = []
         summary = nil
         phase = .loading
+        combo = 0
+        xp = 0
+        lastAnswerXP = 0
     }
 }

@@ -87,12 +87,20 @@ Generate \(count) exercises targeting the active practice topics, weighted towar
 Rules:
 - All sentences must be ORIGINAL — never reproduce published content
 - Vocabulary must be appropriate for \(profile.level.rawValue) per CEFR descriptors
-- Vary question types (multiple_choice, fill_blank, match_pairs, reorder_words)
+- Vary question types: multiple_choice, fill_blank, match_pairs, reorder_words, article_tap, sentence_correction
+- Prefer article_tap for noun-gender topics; prefer sentence_correction for grammar mistakes
 - Explanation must be friendly and explain the grammar rule in plain English
 - Return ONLY valid JSON. No preamble, no markdown, no explanation.
 
-Response format:
-{"exercises": [{"id": "string","topic": "topic_id","type": "multiple_choice | fill_blank | match_pairs | reorder_words","question": "string","sentence": "string with ___ for blank (fill_blank only)","blank": "word(s) (fill_blank only)","options": ["string"] or null,"pairs": [{"left":"string","right":"string"}] or null,"words": ["string"] or null,"correct": "string","hint": "string or null","explanation": "string — friendly 1-2 sentence grammar explanation"}]}
+Response format — each exercise has "type" plus type-specific fields:
+- multiple_choice: {"id","topic","type":"multiple_choice","question","options":["string"],"correct","hint","explanation"}
+- fill_blank: {"id","topic","type":"fill_blank","sentence":"text with ___ for blank","blank","hint","explanation"}
+- match_pairs: {"id","topic","type":"match_pairs","pairs":[{"left","right"}],"hint","explanation"}
+- reorder_words: {"id","topic","type":"reorder_words","words":["shuffled"],"correct":"correct sentence","hint","explanation"}
+- article_tap: {"id","topic","type":"article_tap","noun":"Tisch","context":"___ Tisch ist groß. (optional)","correct":"der|die|das","hint","explanation"}
+- sentence_correction: {"id","topic","type":"sentence_correction","words":["Ich","kaufe","einen","Buch"],"wrongIndex":2,"correction":"ein","hint","explanation"}
+
+Wrap all exercises in: {"exercises": [...]}
 """
         let raw = try await withRetry { [self] in try await call(prompt: prompt, model: self.haiku) }
         let cleaned = stripFences(raw)
@@ -203,6 +211,12 @@ Response format:
             let correct: String?
             let hint: String?
             let explanation: String
+            // article_tap
+            let noun: String?
+            let context: String?
+            // sentence_correction
+            let wrongIndex: Int?
+            let correction: String?
         }
         struct RawPair: Decodable { let left: String; let right: String }
         struct Wrapper: Decodable { let exercises: [RawExercise] }
@@ -229,6 +243,12 @@ Response format:
             case "reorder_words":
                 guard let words = raw.words, let correct = raw.correct else { return nil }
                 return .reorderWords(ReorderWordsExercise(id: raw.id, topic: raw.topic, words: words, correct: correct, hint: raw.hint, explanation: raw.explanation))
+            case "article_tap":
+                guard let noun = raw.noun, let correct = raw.correct else { return nil }
+                return .articleTap(ArticleTapExercise(id: raw.id, topic: raw.topic, noun: noun, context: raw.context, correct: correct, hint: raw.hint, explanation: raw.explanation))
+            case "sentence_correction":
+                guard let words = raw.words, let wrongIndex = raw.wrongIndex, let correction = raw.correction else { return nil }
+                return .sentenceCorrection(SentenceCorrectionExercise(id: raw.id, topic: raw.topic, words: words, wrongIndex: wrongIndex, correction: correction, hint: raw.hint, explanation: raw.explanation))
             default:
                 return nil
             }
