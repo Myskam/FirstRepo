@@ -390,6 +390,7 @@ struct DiagnosticStepView: View {
 
     // MARK: - Async logic
 
+    @MainActor
     private func fetchQuestions() async {
         do {
             let fetched = try await APIService.shared.generateDiagnosticQuestions(
@@ -397,20 +398,16 @@ struct DiagnosticStepView: View {
                 level: level.rawValue,
                 count: 5
             )
-            await MainActor.run {
-                questions = fetched
-                currentIndex = 0
-                answers = []
-                selectedAnswer = nil
-                fillBlankText = ""
-                loadState = fetched.isEmpty
-                    ? .error("No questions were returned. Please try again.")
-                    : .loaded
-            }
+            questions = fetched
+            currentIndex = 0
+            answers = []
+            selectedAnswer = nil
+            fillBlankText = ""
+            loadState = fetched.isEmpty
+                ? .error("No questions were returned. Please try again.")
+                : .loaded
         } catch {
-            await MainActor.run {
-                loadState = .error(error.localizedDescription)
-            }
+            loadState = .error(error.localizedDescription)
         }
     }
 
