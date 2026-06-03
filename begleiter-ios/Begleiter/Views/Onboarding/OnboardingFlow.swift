@@ -114,9 +114,13 @@ struct OnboardingFlow: View {
 
         var profile = StudentProfile(level: level, studyContext: context)
 
-        // 1. Mark every covered topic as .introduced
-        for topicId in coveredTopics {
-            profile.topics[topicId] = TopicState(status: .introduced)
+        // 1. Mark covered topics as .active (ready to practise immediately).
+        //    If the user selected nothing, fall back to all topics for their level.
+        let effectiveTopics = coveredTopics.isEmpty
+            ? Set(TaxonomyService.shared.topicsUpTo(level: level).map(\.id))
+            : coveredTopics
+        for topicId in effectiveTopics {
+            profile.topics[topicId] = TopicState(status: .active)
         }
 
         // 2. For each diagnostic question answered correctly → upgrade to .active

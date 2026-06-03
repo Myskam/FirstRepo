@@ -75,7 +75,7 @@ struct DashboardView: View {
                 )
                 StatCard(
                     title: "Practicing",
-                    count: profile.activeCount,
+                    count: profile.practiceCount,
                     color: Color(.systemOrange),
                     icon: "flame.fill"
                 )
