@@ -59,7 +59,7 @@ actor ProfileService {
 
     /// Returns up to 5 topics prioritised for the next session (struggling first, then oldest practiced).
     func getActivePracticeTopics(profile: StudentProfile) -> [(String, TopicState)] {
-        let eligible = profile.topics.filter { $0.value.status == .active || $0.value.status == .struggling }
+        let eligible = profile.topics.filter { $0.value.status == .active || $0.value.status == .struggling || $0.value.status == .introduced }
         return eligible
             .sorted { a, b in
                 if a.value.status == .struggling && b.value.status != .struggling { return true }

@@ -73,4 +73,6 @@ struct StudentProfile: Codable, Identifiable {
     var masteredCount: Int { topics.values.filter { $0.status == .mastered }.count }
     var activeCount: Int { topics.values.filter { $0.status == .active }.count }
     var strugglingCount: Int { topics.values.filter { $0.status == .struggling }.count }
+    var introducedCount: Int { topics.values.filter { $0.status == .introduced }.count }
+    var practiceCount: Int { activeCount + strugglingCount + introducedCount }
 }

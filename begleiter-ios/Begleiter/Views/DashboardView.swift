@@ -12,7 +12,7 @@ struct DashboardView: View {
 
     private var canStartSession: Bool {
         guard let p = profile else { return false }
-        return p.activeCount > 0 || p.strugglingCount > 0
+        return p.practiceCount > 0
     }
 
     // MARK: - Body
