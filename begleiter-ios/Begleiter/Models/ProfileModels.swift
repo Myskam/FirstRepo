@@ -57,6 +57,7 @@ struct StudentProfile: Codable, Identifiable {
     var topics: [String: TopicState]
     var currentStreak: Int
     var lastPracticeDate: Date?
+    var unlockedTopics: Set<String>  // Topics the user has unlocked; empty = only fundamentals
 
     init(level: CefrLevel, studyContext: StudyContext) {
         id = UUID().uuidString
@@ -68,6 +69,22 @@ struct StudentProfile: Codable, Identifiable {
         topics = [:]
         currentStreak = 0
         lastPracticeDate = nil
+        unlockedTopics = []
+    }
+
+    // Custom decoder: unlockedTopics defaults to empty if missing
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        createdAt = try c.decode(String.self, forKey: .createdAt)
+        level = try c.decode(CefrLevel.self, forKey: .level)
+        studyContext = try c.decode(StudyContext.self, forKey: .studyContext)
+        textbook = try? c.decode(String.self, forKey: .textbook)
+        onboardingComplete = try c.decode(Bool.self, forKey: .onboardingComplete)
+        topics = try c.decode([String: TopicState].self, forKey: .topics)
+        currentStreak = try c.decode(Int.self, forKey: .currentStreak)
+        lastPracticeDate = try? c.decode(Date.self, forKey: .lastPracticeDate)
+        unlockedTopics = try c.decodeIfPresent(Set<String>.self, forKey: .unlockedTopics) ?? []
     }
 
     var masteredCount: Int { topics.values.filter { $0.status == .mastered }.count }

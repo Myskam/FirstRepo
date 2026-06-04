@@ -5,9 +5,20 @@ final class SessionService {
     private init() {}
 
     func buildSession(profile: StudentProfile) async throws -> [Exercise] {
+        // Get available topics from the course structure
+        let availableTopics = CourseStructure.shared.getAvailablePracticeTopics(for: profile)
+        let focusTopics = CourseStructure.shared.selectTopicsForSession(availableTopics: availableTopics)
+
+        // Create a modified profile that only has these focus topics as active
+        var focusedProfile = profile
+        focusedProfile.topics = profile.topics.filter { focusTopics.contains($0.key) }
+
         // Try Claude first; fall back to bundled exercises on failure
         do {
-            let exercises = try await APIService.shared.generateSessionExercises(profile: profile, count: 12)
+            let exercises = try await APIService.shared.generateSessionExercises(
+                profile: focusedProfile,
+                count: 8  // Fewer exercises, more focused
+            )
             return exercises.isEmpty ? fallbackExercises() : exercises
         } catch BegleiterError.apiKeyMissing {
             throw BegleiterError.apiKeyMissing

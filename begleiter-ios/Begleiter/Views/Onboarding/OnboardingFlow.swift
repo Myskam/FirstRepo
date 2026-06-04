@@ -148,7 +148,10 @@ struct OnboardingFlow: View {
             }
         }
 
-        // 3. Mark onboarding complete and persist
+        // 3. Set initial unlock state (A1 fundamentals: greetings)
+        profile.unlockedTopics = CourseStructure.shared.getInitialUnlockedTopics()
+
+        // 4. Mark onboarding complete and persist
         profile.onboardingComplete = true
         await profileVM.saveProfile(profile)
     }
