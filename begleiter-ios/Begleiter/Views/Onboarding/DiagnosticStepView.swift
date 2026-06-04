@@ -413,9 +413,9 @@ struct DiagnosticStepView: View {
 
     private func revealFeedbackThenAdvance() {
         withAnimation { showFeedback = true }
-        Task {
+        Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(1_500))
-            await advance()
+            advance()
         }
     }
 

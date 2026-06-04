@@ -75,12 +75,13 @@ final class SessionViewModel {
         let elapsed = Date().timeIntervalSince(startTime)
         let correctAnswer: String
         switch ex {
-        case .multipleChoice(let e):    correctAnswer = e.correct
-        case .fillBlank(let e):         correctAnswer = e.blank
-        case .matchPairs:               correctAnswer = ""
-        case .reorderWords(let e):      correctAnswer = e.correct
-        case .articleTap(let e):        correctAnswer = e.correct
+        case .multipleChoice(let e):     correctAnswer = e.correct
+        case .fillBlank(let e):          correctAnswer = e.blank
+        case .matchPairs:                correctAnswer = ""
+        case .reorderWords(let e):       correctAnswer = e.correct
+        case .articleTap(let e):         correctAnswer = e.correct
         case .sentenceCorrection(let e): correctAnswer = e.correction
+        case .rotatingWheel(let e):      correctAnswer = e.options.first ?? ""
         }
         let answer = Answer(exerciseId: ex.id, topic: ex.topic, isCorrect: isCorrect,
                             userAnswer: userAnswer, correctAnswer: correctAnswer, timeSeconds: elapsed)

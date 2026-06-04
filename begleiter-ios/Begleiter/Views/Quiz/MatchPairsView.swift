@@ -136,7 +136,7 @@ struct MatchPairsView: View {
             // Correct match
             HapticsService.shared.correctAnswer()
             withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
-                matched.insert(pair.id)
+                _ = matched.insert(pair.id)
             }
             selectedLeft = nil
 
