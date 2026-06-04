@@ -97,6 +97,16 @@ struct SentenceCorrectionExercise: Codable, Identifiable {
     let explanation: String
 }
 
+struct RotatingWheelExercise: Codable, Identifiable {
+    let id: String
+    let topic: String
+    let center: String           // e.g. "Der Tisch ist..." or German word
+    let options: [String]        // wheel items; first is always correct
+    let context: String?         // optional: "Select the correct adjective"
+    let hint: String?
+    let explanation: String
+}
+
 // MARK: - Discriminated union
 
 enum Exercise: Identifiable {
@@ -106,44 +116,48 @@ enum Exercise: Identifiable {
     case reorderWords(ReorderWordsExercise)
     case articleTap(ArticleTapExercise)
     case sentenceCorrection(SentenceCorrectionExercise)
+    case rotatingWheel(RotatingWheelExercise)
 
     var id: String {
         switch self {
-        case .multipleChoice(let e):    return e.id
-        case .fillBlank(let e):         return e.id
-        case .matchPairs(let e):        return e.id
-        case .reorderWords(let e):      return e.id
-        case .articleTap(let e):        return e.id
+        case .multipleChoice(let e):     return e.id
+        case .fillBlank(let e):          return e.id
+        case .matchPairs(let e):         return e.id
+        case .reorderWords(let e):       return e.id
+        case .articleTap(let e):         return e.id
         case .sentenceCorrection(let e): return e.id
+        case .rotatingWheel(let e):      return e.id
         }
     }
 
     var topic: String {
         switch self {
-        case .multipleChoice(let e):    return e.topic
-        case .fillBlank(let e):         return e.topic
-        case .matchPairs(let e):        return e.topic
-        case .reorderWords(let e):      return e.topic
-        case .articleTap(let e):        return e.topic
+        case .multipleChoice(let e):     return e.topic
+        case .fillBlank(let e):          return e.topic
+        case .matchPairs(let e):         return e.topic
+        case .reorderWords(let e):       return e.topic
+        case .articleTap(let e):         return e.topic
         case .sentenceCorrection(let e): return e.topic
+        case .rotatingWheel(let e):      return e.topic
         }
     }
 
     var explanation: String {
         switch self {
-        case .multipleChoice(let e):    return e.explanation
-        case .fillBlank(let e):         return e.explanation
-        case .matchPairs(let e):        return e.explanation
-        case .reorderWords(let e):      return e.explanation
-        case .articleTap(let e):        return e.explanation
+        case .multipleChoice(let e):     return e.explanation
+        case .fillBlank(let e):          return e.explanation
+        case .matchPairs(let e):         return e.explanation
+        case .reorderWords(let e):       return e.explanation
+        case .articleTap(let e):         return e.explanation
         case .sentenceCorrection(let e): return e.explanation
+        case .rotatingWheel(let e):      return e.explanation
         }
     }
 }
 
 extension Exercise: Codable {
     private enum TypeKey: String, Codable {
-        case multiple_choice, fill_blank, match_pairs, reorder_words, article_tap, sentence_correction
+        case multiple_choice, fill_blank, match_pairs, reorder_words, article_tap, sentence_correction, rotating_wheel
     }
 
     private enum CodingKeys: String, CodingKey { case type }
@@ -153,23 +167,25 @@ extension Exercise: Codable {
         let type_ = try container.decode(TypeKey.self, forKey: .type)
         let single = try decoder.singleValueContainer()
         switch type_ {
-        case .multiple_choice:    self = .multipleChoice(try single.decode(MultipleChoiceExercise.self))
-        case .fill_blank:         self = .fillBlank(try single.decode(FillBlankExercise.self))
-        case .match_pairs:        self = .matchPairs(try single.decode(MatchPairsExercise.self))
-        case .reorder_words:      self = .reorderWords(try single.decode(ReorderWordsExercise.self))
-        case .article_tap:        self = .articleTap(try single.decode(ArticleTapExercise.self))
+        case .multiple_choice:     self = .multipleChoice(try single.decode(MultipleChoiceExercise.self))
+        case .fill_blank:          self = .fillBlank(try single.decode(FillBlankExercise.self))
+        case .match_pairs:         self = .matchPairs(try single.decode(MatchPairsExercise.self))
+        case .reorder_words:       self = .reorderWords(try single.decode(ReorderWordsExercise.self))
+        case .article_tap:         self = .articleTap(try single.decode(ArticleTapExercise.self))
         case .sentence_correction: self = .sentenceCorrection(try single.decode(SentenceCorrectionExercise.self))
+        case .rotating_wheel:      self = .rotatingWheel(try single.decode(RotatingWheelExercise.self))
         }
     }
 
     func encode(to encoder: Encoder) throws {
         switch self {
-        case .multipleChoice(let e):    try e.encode(to: encoder)
-        case .fillBlank(let e):         try e.encode(to: encoder)
-        case .matchPairs(let e):        try e.encode(to: encoder)
-        case .reorderWords(let e):      try e.encode(to: encoder)
-        case .articleTap(let e):        try e.encode(to: encoder)
+        case .multipleChoice(let e):     try e.encode(to: encoder)
+        case .fillBlank(let e):          try e.encode(to: encoder)
+        case .matchPairs(let e):         try e.encode(to: encoder)
+        case .reorderWords(let e):       try e.encode(to: encoder)
+        case .articleTap(let e):         try e.encode(to: encoder)
         case .sentenceCorrection(let e): try e.encode(to: encoder)
+        case .rotatingWheel(let e):      try e.encode(to: encoder)
         }
     }
 }

@@ -18,9 +18,10 @@ struct ActiveSessionView: View {
         case .multipleChoice(let e):    return e.correct
         case .fillBlank(let e):         return e.blank
         case .matchPairs:               return ""
-        case .reorderWords(let e):      return e.correct
-        case .articleTap(let e):        return e.correct
+        case .reorderWords(let e):       return e.correct
+        case .articleTap(let e):         return e.correct
         case .sentenceCorrection(let e): return e.correction
+        case .rotatingWheel(let e):      return e.options.first ?? ""
         }
     }
 
@@ -173,6 +174,11 @@ struct ActiveSessionView: View {
 
         case .sentenceCorrection(let e):
             SentenceCorrectionView(exercise: e) { answer, correct in
+                Task { await sessionVM.recordAnswer(userAnswer: answer, isCorrect: correct) }
+            }
+
+        case .rotatingWheel(let e):
+            RotatingWheelView(exercise: e) { answer, correct in
                 Task { await sessionVM.recordAnswer(userAnswer: answer, isCorrect: correct) }
             }
         }

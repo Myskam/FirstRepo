@@ -87,7 +87,7 @@ Generate \(count) exercises targeting the active practice topics, weighted towar
 Rules:
 - All sentences must be ORIGINAL — never reproduce published content
 - Vocabulary must be appropriate for \(profile.level.rawValue) per CEFR descriptors
-- Vary question types: multiple_choice, fill_blank, match_pairs, reorder_words, article_tap, sentence_correction
+- Vary question types: multiple_choice, fill_blank, match_pairs, reorder_words, article_tap, sentence_correction, rotating_wheel
 - Use article_tap for noun-gender practice; use sentence_correction to spot grammar mistakes
 - fill_blank: use exactly ONE ___ per sentence; provide 5-8 shuffled options including the correct answer
 - Explanation must be friendly and explain the grammar rule in plain English
@@ -100,7 +100,8 @@ Response format:
   {"id":"ex3","topic":"topic_id","type":"match_pairs","pairs":[{"left":"Hallo","right":"Hello"}],"hint":null,"explanation":"string"},
   {"id":"ex4","topic":"topic_id","type":"reorder_words","words":["ich","gehe","morgen"],"correct":"Ich gehe morgen","hint":null,"explanation":"string"},
   {"id":"ex5","topic":"topic_id","type":"article_tap","noun":"Tisch","context":"___ Tisch ist groß.","correct":"der","hint":null,"explanation":"string"},
-  {"id":"ex6","topic":"topic_id","type":"sentence_correction","words":["Ich","kaufe","einen","Buch"],"wrongIndex":2,"correction":"ein","hint":null,"explanation":"string"}
+  {"id":"ex6","topic":"topic_id","type":"sentence_correction","words":["Ich","kaufe","einen","Buch"],"wrongIndex":2,"correction":"ein","hint":null,"explanation":"string"},
+  {"id":"ex7","topic":"topic_id","type":"rotating_wheel","center":"Der Tisch ist...","options":["groß","klein","neu","alt"],"context":null,"hint":null,"explanation":"string"}
 ]}
 """
         let raw = try await withRetry { [self] in try await call(prompt: prompt, model: self.haiku) }
@@ -218,6 +219,8 @@ Response format:
             // sentence_correction
             let wrongIndex: Int?
             let correction: String?
+            // rotating_wheel
+            let center: String?
         }
         struct RawPair: Decodable { let left: String; let right: String }
         struct Wrapper: Decodable { let exercises: [RawExercise] }
@@ -250,6 +253,9 @@ Response format:
             case "sentence_correction":
                 guard let words = raw.words, let wrongIndex = raw.wrongIndex, let correction = raw.correction else { return nil }
                 return .sentenceCorrection(SentenceCorrectionExercise(id: raw.id, topic: raw.topic, words: words, wrongIndex: wrongIndex, correction: correction, hint: raw.hint, explanation: raw.explanation))
+            case "rotating_wheel":
+                guard let center = raw.center, let opts = raw.options, !opts.isEmpty else { return nil }
+                return .rotatingWheel(RotatingWheelExercise(id: raw.id, topic: raw.topic, center: center, options: opts, context: raw.context, hint: raw.hint, explanation: raw.explanation))
             default:
                 return nil
             }
