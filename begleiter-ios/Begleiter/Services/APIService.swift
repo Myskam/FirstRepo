@@ -88,19 +88,20 @@ Rules:
 - All sentences must be ORIGINAL — never reproduce published content
 - Vocabulary must be appropriate for \(profile.level.rawValue) per CEFR descriptors
 - Vary question types: multiple_choice, fill_blank, match_pairs, reorder_words, article_tap, sentence_correction
-- Prefer article_tap for noun-gender topics; prefer sentence_correction for grammar mistakes
+- Use article_tap for noun-gender practice; use sentence_correction to spot grammar mistakes
+- fill_blank: use exactly ONE ___ per sentence; provide 5-8 shuffled options including the correct answer
 - Explanation must be friendly and explain the grammar rule in plain English
 - Return ONLY valid JSON. No preamble, no markdown, no explanation.
 
-Response format — each exercise has "type" plus type-specific fields:
-- multiple_choice: {"id","topic","type":"multiple_choice","question","options":["string"],"correct","hint","explanation"}
-- fill_blank: {"id","topic","type":"fill_blank","sentence":"text with exactly one ___ (never more than one)","blank":"correct word","options":["shuffled array of 5-8 plausible choices including the correct answer"],"hint","explanation"}
-- match_pairs: {"id","topic","type":"match_pairs","pairs":[{"left","right"}],"hint","explanation"}
-- reorder_words: {"id","topic","type":"reorder_words","words":["shuffled"],"correct":"correct sentence","hint","explanation"}
-- article_tap: {"id","topic","type":"article_tap","noun":"Tisch","context":"___ Tisch ist groß. (optional)","correct":"der|die|das","hint","explanation"}
-- sentence_correction: {"id","topic","type":"sentence_correction","words":["Ich","kaufe","einen","Buch"],"wrongIndex":2,"correction":"ein","hint","explanation"}
-
-Wrap all exercises in: {"exercises": [...]}
+Response format:
+{"exercises": [
+  {"id":"ex1","topic":"topic_id","type":"multiple_choice","question":"string","options":["a","b","c","d"],"correct":"a","hint":null,"explanation":"string"},
+  {"id":"ex2","topic":"topic_id","type":"fill_blank","sentence":"Ich ___ Student.","blank":"bin","options":["bin","bist","ist","sind","war","hatte"],"hint":null,"explanation":"string"},
+  {"id":"ex3","topic":"topic_id","type":"match_pairs","pairs":[{"left":"Hallo","right":"Hello"}],"hint":null,"explanation":"string"},
+  {"id":"ex4","topic":"topic_id","type":"reorder_words","words":["ich","gehe","morgen"],"correct":"Ich gehe morgen","hint":null,"explanation":"string"},
+  {"id":"ex5","topic":"topic_id","type":"article_tap","noun":"Tisch","context":"___ Tisch ist groß.","correct":"der","hint":null,"explanation":"string"},
+  {"id":"ex6","topic":"topic_id","type":"sentence_correction","words":["Ich","kaufe","einen","Buch"],"wrongIndex":2,"correction":"ein","hint":null,"explanation":"string"}
+]}
 """
         let raw = try await withRetry { [self] in try await call(prompt: prompt, model: self.haiku) }
         let cleaned = stripFences(raw)

@@ -54,6 +54,18 @@ struct MatchPair: Codable, Identifiable, Hashable {
     let id: String
     let left: String
     let right: String
+
+    // JSON from the API and fallback often omits "id" — synthesise one if missing
+    init(id: String, left: String, right: String) {
+        self.id = id; self.left = left; self.right = right
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        left = try c.decode(String.self, forKey: .left)
+        right = try c.decode(String.self, forKey: .right)
+        id = (try? c.decode(String.self, forKey: .id)) ?? "\(left)|\(right)"
+    }
 }
 
 struct ReorderWordsExercise: Codable, Identifiable {
