@@ -1,190 +1,213 @@
 import SwiftUI
 
+// MARK: - FillBlankView
+
+/// Wheel-picker fill-in-the-blank exercise.
+///
+/// The sentence is shown at the top with the blank replaced by the currently
+/// selected wheel option — it updates live as the user spins the drum.
+/// No typing required: ADHD/visual-learner friendly.
 struct FillBlankView: View {
     let exercise: FillBlankExercise
     let onAnswer: (String, Bool) -> Void
 
-    @State private var userInput: String = ""
-    @State private var submitted: Bool = false
-    @State private var isCorrect: Bool = false
-    @FocusState private var fieldFocused: Bool
+    @State private var selectedIndex: Int = 0
+    @State private var submitted = false
 
-    // MARK: - Helpers
+    // MARK: - Derived
 
-    /// Replace the first "___" with an underline placeholder for display.
-    private var displaySentence: AttributedString {
-        let placeholder = "________"
-        let raw = exercise.sentence.replacingOccurrences(of: "___", with: placeholder)
-        var attributed = AttributedString(raw)
-        if let range = attributed.range(of: placeholder) {
-            attributed[range].underlineStyle = .single
-            attributed[range].foregroundColor = UIColor.label  // matches system text
-        }
-        return attributed
+    private var options: [String] {
+        exercise.options.isEmpty ? [exercise.blank] : exercise.options
     }
 
-    private var borderColor: Color {
-        guard submitted else { return Color(.separator) }
-        return isCorrect ? Color(hex: "#34D399") : Color(hex: "#F87171")
+    private var selectedWord: String { options[selectedIndex] }
+
+    private var isCorrect: Bool {
+        normalize(selectedWord) == normalize(exercise.blank)
     }
 
-    private var trimmedInput: String {
-        userInput.trimmingCharacters(in: .whitespacesAndNewlines)
+    private var blankColor: Color {
+        if !submitted { return .accentColor }
+        return isCorrect ? Color("BrandGreen") : Color(.systemRed)
     }
 
     // MARK: - Body
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            // 1. Sentence with blank placeholder
-            Text(displaySentence)
-                .font(.title2.bold())
-                .fixedSize(horizontal: false, vertical: true)
-
-            // 2. Hint
-            if let hint = exercise.hint {
-                Text(hint)
-                    .font(.footnote.italic())
+        VStack(spacing: 0) {
+            VStack(spacing: 24) {
+                // Header
+                Text("Fill in the blank")
+                    .font(.headline)
                     .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
 
-            // 3. Text field
-            TextField("Type your answer…", text: $userInput)
-                .font(.body)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 12)
-                .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .strokeBorder(borderColor, lineWidth: submitted ? 2 : 1)
-                )
-                .focused($fieldFocused)
-                .disabled(submitted)
-                .autocorrectionDisabled(true)
-                .textInputAutocapitalization(.never)
-                .submitLabel(.done)
-                .onSubmit { checkIfReady() }
-                .toolbar {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Spacer()
-                        Button("Done") {
-                            fieldFocused = false
-                        }
-                        .fontWeight(.semibold)
+                // Sentence card — blank updates as wheel turns
+                sentenceCard
+                    .animation(.easeInOut(duration: 0.12), value: selectedIndex)
+
+                // Wheel picker
+                wheelPicker
+
+                // Hint
+                if let hint = exercise.hint {
+                    HStack(spacing: 5) {
+                        Image(systemName: "lightbulb.fill")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                        Text(hint)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .animation(.easeInOut(duration: 0.2), value: submitted)
 
-            // Inline result label after submit
-            if submitted {
-                HStack(spacing: 6) {
-                    Image(systemName: isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill")
-                    Text(isCorrect ? "Correct!" : "Correct answer: \(exercise.blank)")
-                        .font(.subheadline.weight(.medium))
+                // Check button
+                Button(action: submit) {
+                    Text("Check")
+                        .font(.body.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(
+                            submitted ? Color(.systemGray4) : Color("BrandGreen"),
+                            in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        )
+                        .foregroundStyle(submitted ? Color(.systemGray) : .white)
                 }
-                .foregroundStyle(isCorrect ? Color(hex: "#34D399") : Color(hex: "#F87171"))
-                .transition(.opacity.combined(with: .move(edge: .top)))
+                .buttonStyle(.plain)
+                .disabled(submitted)
+                .animation(.easeInOut(duration: 0.15), value: submitted)
             }
+            .padding(.top, 8)
 
-            // 4. Check button
-            Button(action: submitAnswer) {
-                Text("Check")
-                    .font(.body.weight(.semibold))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-                    .background(
-                        trimmedInput.isEmpty || submitted
-                            ? Color(.systemGray4)
-                            : Color(hex: "#34D399"),
-                        in: RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    )
-                    .foregroundStyle(trimmedInput.isEmpty || submitted ? Color(.systemGray) : .white)
-            }
-            .disabled(trimmedInput.isEmpty || submitted)
-            .animation(.easeInOut(duration: 0.15), value: trimmedInput.isEmpty)
+            Spacer()
         }
-        .onAppear {
-            // Auto-focus on appear
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                fieldFocused = true
-            }
-        }
-        .animation(.easeInOut(duration: 0.2), value: submitted)
     }
 
-    // MARK: - Actions
+    // MARK: - Sentence card
 
-    private func checkIfReady() {
-        guard !trimmedInput.isEmpty, !submitted else { return }
-        submitAnswer()
+    private var sentenceCard: some View {
+        // Split on the first blank only; ignore additional blanks (API guard)
+        let rawParts = exercise.sentence.components(separatedBy: "___")
+        let before   = rawParts.first ?? ""
+        let after    = rawParts.count > 1
+            ? rawParts[1].components(separatedBy: "___").first ?? ""
+            : ""
+
+        let display = Text(before).foregroundColor(.primary)
+            + Text(selectedWord)
+                  .foregroundColor(blankColor)
+                  .bold()
+            + Text(after).foregroundColor(.primary)
+
+        return display
+            .font(.title3.weight(.semibold))
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 28)
+            .padding(.horizontal, 20)
+            .background(
+                Color(.secondarySystemGroupedBackground),
+                in: RoundedRectangle(cornerRadius: 20, style: .continuous)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .strokeBorder(blankColor.opacity(submitted ? 0.55 : 0.2), lineWidth: 1.5)
+            )
     }
 
-    private func submitAnswer() {
-        guard !trimmedInput.isEmpty, !submitted else { return }
-        fieldFocused = false
+    // MARK: - Wheel picker
+
+    private var wheelPicker: some View {
+        VStack(spacing: 0) {
+            // Label row
+            HStack {
+                Image(systemName: "arrow.up.arrow.down")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                Text("Spin to select")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                Spacer()
+                Text("\(options.count) options")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 10)
+
+            Picker("Answer", selection: $selectedIndex) {
+                ForEach(Array(options.enumerated()), id: \.offset) { i, word in
+                    Text(word)
+                        .font(.body.weight(.medium))
+                        .tag(i)
+                }
+            }
+            .pickerStyle(.wheel)
+            .frame(height: 150)
+            .disabled(submitted)
+        }
+        .background(
+            Color(.secondarySystemGroupedBackground),
+            in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+        )
+    }
+
+    // MARK: - Submit
+
+    private func submit() {
+        guard !submitted else { return }
         HapticsService.shared.tap()
-        let correct = normalize(trimmedInput) == normalize(exercise.blank)
-        isCorrect = correct
         submitted = true
-        if correct {
+        if isCorrect {
             HapticsService.shared.correctAnswer()
         } else {
             HapticsService.shared.wrongAnswer()
         }
-        onAnswer(trimmedInput, correct)
+        onAnswer(selectedWord, isCorrect)
     }
 
-    /// Lowercase, trim whitespace, strip punctuation.
-    private func normalize(_ text: String) -> String {
-        let stripped = text.unicodeScalars.filter { scalar in
-            let char = Character(scalar)
-            guard let ascii = scalar.value as UInt32? else { return true }
-            let punctuation: [UInt32] = [
-                46, 44, 33, 63, 59, 58, 39, 34, 40, 41  // . , ! ? ; : ' " ( )
-            ]
-            return !punctuation.contains(ascii)
-        }
-        return String(stripped).lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-}
+    // MARK: - Normalise for comparison
 
-// MARK: - Hex color helper
-
-private extension Color {
-    init(hex: String) {
-        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-        let r = (int >> 16) & 0xFF
-        let g = (int >> 8) & 0xFF
-        let b = int & 0xFF
-        self.init(
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255
-        )
+    private func normalize(_ s: String) -> String {
+        s.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
 // MARK: - Preview
 
-#Preview("Fill in the Blank") {
+#Preview("Fill Blank — wheel with options") {
     ScrollView {
         FillBlankView(
             exercise: FillBlankExercise(
                 id: "fb-1",
-                topic: "Prepositions",
+                topic: "a1_sein",
+                sentence: "Ich ___ Student.",
+                blank: "bin",
+                options: ["bin", "bist", "ist", "sind", "war", "waren"],
+                hint: "First-person singular of sein",
+                explanation: "\"Ich bin\" — first-person singular present tense of sein."
+            ),
+            onAnswer: { answer, correct in print("Answer: \(answer), correct: \(correct)") }
+        )
+        .padding(20)
+    }
+    .background(Color(.systemGroupedBackground))
+}
+
+#Preview("Fill Blank — no options (fallback)") {
+    ScrollView {
+        FillBlankView(
+            exercise: FillBlankExercise(
+                id: "fb-2",
+                topic: "a1_prepositions",
                 sentence: "Ich gehe ___ Hause.",
                 blank: "nach",
-                hint: "This preposition is used for going home.",
-                explanation: "\"nach Hause\" is the correct idiomatic expression."
+                hint: nil,
+                explanation: "\"nach Hause\" is an idiomatic expression for going home."
             ),
-            onAnswer: { answer, correct in
-                print("Answer: \(answer), Correct: \(correct)")
-            }
+            onAnswer: { _, _ in }
         )
-        .padding()
+        .padding(20)
     }
     .background(Color(.systemGroupedBackground))
 }

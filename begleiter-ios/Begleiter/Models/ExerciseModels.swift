@@ -15,10 +15,31 @@ struct MultipleChoiceExercise: Codable, Identifiable {
 struct FillBlankExercise: Codable, Identifiable {
     let id: String
     let topic: String
-    let sentence: String   // contains "___"
-    let blank: String      // the correct fill word(s)
+    let sentence: String   // contains exactly one "___"
+    let blank: String      // the correct answer
+    let options: [String]  // shuffled choices including the correct answer (5–8 items)
     let hint: String?
     let explanation: String
+
+    // Memberwise init so call-sites can omit options (backward compat)
+    init(id: String, topic: String, sentence: String, blank: String,
+         options: [String] = [], hint: String?, explanation: String) {
+        self.id = id; self.topic = topic; self.sentence = sentence
+        self.blank = blank; self.options = options; self.hint = hint
+        self.explanation = explanation
+    }
+
+    // Custom decoder so missing "options" key defaults to [] instead of throwing
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id          = try c.decode(String.self, forKey: .id)
+        topic       = try c.decode(String.self, forKey: .topic)
+        sentence    = try c.decode(String.self, forKey: .sentence)
+        blank       = try c.decode(String.self, forKey: .blank)
+        options     = (try? c.decode([String].self, forKey: .options)) ?? []
+        hint        = try? c.decode(String.self, forKey: .hint)
+        explanation = try c.decode(String.self, forKey: .explanation)
+    }
 }
 
 struct MatchPairsExercise: Codable, Identifiable {

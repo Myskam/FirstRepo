@@ -94,7 +94,7 @@ Rules:
 
 Response format — each exercise has "type" plus type-specific fields:
 - multiple_choice: {"id","topic","type":"multiple_choice","question","options":["string"],"correct","hint","explanation"}
-- fill_blank: {"id","topic","type":"fill_blank","sentence":"text with ___ for blank","blank","hint","explanation"}
+- fill_blank: {"id","topic","type":"fill_blank","sentence":"text with exactly one ___ (never more than one)","blank":"correct word","options":["shuffled array of 5-8 plausible choices including the correct answer"],"hint","explanation"}
 - match_pairs: {"id","topic","type":"match_pairs","pairs":[{"left","right"}],"hint","explanation"}
 - reorder_words: {"id","topic","type":"reorder_words","words":["shuffled"],"correct":"correct sentence","hint","explanation"}
 - article_tap: {"id","topic","type":"article_tap","noun":"Tisch","context":"___ Tisch ist groß. (optional)","correct":"der|die|das","hint","explanation"}
@@ -235,7 +235,7 @@ Response format:
                 return .multipleChoice(MultipleChoiceExercise(id: raw.id, topic: raw.topic, question: q, options: opts, correct: c, hint: raw.hint, explanation: raw.explanation))
             case "fill_blank":
                 guard let sentence = raw.sentence, let blank = raw.blank else { return nil }
-                return .fillBlank(FillBlankExercise(id: raw.id, topic: raw.topic, sentence: sentence, blank: blank, hint: raw.hint, explanation: raw.explanation))
+                return .fillBlank(FillBlankExercise(id: raw.id, topic: raw.topic, sentence: sentence, blank: blank, options: raw.options ?? [], hint: raw.hint, explanation: raw.explanation))
             case "match_pairs":
                 guard let rawPairs = raw.pairs else { return nil }
                 let pairs = rawPairs.enumerated().map { MatchPair(id: "\(raw.id)_\($0.offset)", left: $0.element.left, right: $0.element.right) }
