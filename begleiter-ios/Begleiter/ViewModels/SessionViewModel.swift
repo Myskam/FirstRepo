@@ -32,6 +32,9 @@ final class SessionViewModel {
     var xp: Int = 0
     var lastAnswerXP: Int = 0
 
+    // Course progression: topics unlocked by this session (curriculum order)
+    var newlyUnlockedTopics: [String] = []
+
     private let profileVM: ProfileViewModel
 
     init(profileVM: ProfileViewModel) {
@@ -115,6 +118,8 @@ final class SessionViewModel {
     func finishSession() async {
         phase = .loading
         await profileVM.updateStreak()
+        // Grant any topics unlocked by mastery during this session.
+        newlyUnlockedTopics = await profileVM.applyCourseProgression()
         guard let profile = profileVM.profile else { return }
         do {
             summary = try await SessionService.shared.buildSummary(profile: profile, answers: answers)
@@ -134,5 +139,6 @@ final class SessionViewModel {
         combo = 0
         xp = 0
         lastAnswerXP = 0
+        newlyUnlockedTopics = []
     }
 }

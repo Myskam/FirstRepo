@@ -53,6 +53,7 @@
 		000000000000000000000076 /* SentenceCorrectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000075 /* SentenceCorrectionView.swift */; };
 		000000000000000000000078 /* ComboMeterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000077 /* ComboMeterView.swift */; };
 		00000000000000000000007A /* RotatingWheelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000079 /* RotatingWheelView.swift */; };
+		00000000000000000000007C /* CourseStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000007B /* CourseStructure.swift */; };
 		00000000000000000000001C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001B /* Assets.xcassets */; };
 		00000000000000000000001E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001D /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
@@ -95,6 +96,7 @@
 		000000000000000000000075 /* SentenceCorrectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentenceCorrectionView.swift; sourceTree = "<group>"; };
 		000000000000000000000077 /* ComboMeterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComboMeterView.swift; sourceTree = "<group>"; };
 		000000000000000000000079 /* RotatingWheelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotatingWheelView.swift; sourceTree = "<group>"; };
+		00000000000000000000007B /* CourseStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseStructure.swift; sourceTree = "<group>"; };
 		000000000000000000000059 /* OnboardingWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.swift; sourceTree = "<group>"; };
 		00000000000000000000005B /* ContextStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextStepView.swift; sourceTree = "<group>"; };
 		00000000000000000000005D /* LevelStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelStepView.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 				000000000000000000000025 /* ProfileModels.swift */,
 				000000000000000000000027 /* ExerciseModels.swift */,
 				000000000000000000000029 /* SessionModels.swift */,
+				00000000000000000000007B /* CourseStructure.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -378,6 +381,7 @@
 				000000000000000000000076 /* SentenceCorrectionView.swift in Sources */,
 				000000000000000000000078 /* ComboMeterView.swift in Sources */,
 				00000000000000000000007A /* RotatingWheelView.swift in Sources */,
+				00000000000000000000007C /* CourseStructure.swift in Sources */,
 				00000000000000000000005A /* OnboardingWelcomeView.swift in Sources */,
 				00000000000000000000005C /* ContextStepView.swift in Sources */,
 				00000000000000000000005E /* LevelStepView.swift in Sources */,

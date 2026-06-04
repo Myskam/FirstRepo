@@ -10,6 +10,7 @@ struct SessionSummaryView: View {
     let answers: [Answer]
     let profile: StudentProfile
     var totalXP: Int = 0
+    var newlyUnlockedTopics: [String] = []
 
     @Environment(\.dismiss) var dismiss
 
@@ -55,6 +56,9 @@ struct SessionSummaryView: View {
             VStack(spacing: 24) {
                 scoreSection
                 xpGradeRow
+                if !newlyUnlockedTopics.isEmpty {
+                    unlockedSection
+                }
                 topicsSection
                 recommendationCard
                 streakSection
@@ -158,6 +162,51 @@ struct SessionSummaryView: View {
             .padding(.vertical, 20)
             .background(Color(.secondarySystemGroupedBackground),
                         in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        }
+    }
+
+    // MARK: - Newly unlocked section
+
+    private var unlockedSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 6) {
+                Image(systemName: "lock.open.fill")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color("BrandGreen"))
+                Text("New topics unlocked!")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .textCase(.uppercase)
+            }
+
+            VStack(spacing: 0) {
+                ForEach(Array(newlyUnlockedTopics.enumerated()), id: \.offset) { index, topicId in
+                    HStack(spacing: 10) {
+                        Image(systemName: "sparkles")
+                            .font(.body.weight(.semibold))
+                            .foregroundStyle(Color("BrandGreen"))
+                            .frame(width: 22)
+
+                        Text(TaxonomyService.shared.displayName(for: topicId))
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(.primary)
+
+                        Spacer()
+                    }
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 16)
+
+                    if index < newlyUnlockedTopics.count - 1 {
+                        Divider().padding(.leading, 48)
+                    }
+                }
+            }
+            .background(Color(.secondarySystemGroupedBackground),
+                        in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .strokeBorder(Color("BrandGreen").opacity(0.3), lineWidth: 1)
+            )
         }
     }
 

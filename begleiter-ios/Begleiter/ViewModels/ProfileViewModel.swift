@@ -49,6 +49,19 @@ final class ProfileViewModel {
         return await service.getActivePracticeTopics(profile: p)
     }
 
+    /// Apply course progression: grant any topics unlocked by recent mastery,
+    /// persist the change, and return the newly-unlocked topic ids (in
+    /// curriculum order) so the UI can celebrate them.
+    @MainActor
+    func applyCourseProgression() async -> [String] {
+        guard var p = profile else { return [] }
+        let newly = CourseStructure.shared.applyProgression(to: &p)
+        guard !newly.isEmpty else { return [] }
+        await service.save(p)
+        profile = p
+        return newly
+    }
+
     // MARK: - Preview
 
     static var preview: ProfileViewModel {
@@ -59,6 +72,7 @@ final class ProfileViewModel {
         p.topics["a1_greetings"] = TopicState(status: .mastered)
         p.topics["a1_sein"] = TopicState(status: .active)
         p.topics["a1_nominativ"] = TopicState(status: .struggling)
+        p.unlockedTopics = ["a1_greetings", "a1_sein", "a1_nominativ", "a1_numbers"]
         vm.profile = p
         return vm
     }

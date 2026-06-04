@@ -148,8 +148,10 @@ struct OnboardingFlow: View {
             }
         }
 
-        // 3. Set initial unlock state (A1 fundamentals: greetings)
-        profile.unlockedTopics = CourseStructure.shared.getInitialUnlockedTopics()
+        // 3. Seed the unlock set: everything the learner already reported
+        //    knowing, plus the first curriculum unit so there's always
+        //    something to practise.
+        profile.unlockedTopics = CourseStructure.shared.initialUnlockedTopics(for: profile)
 
         // 4. Mark onboarding complete and persist
         profile.onboardingComplete = true

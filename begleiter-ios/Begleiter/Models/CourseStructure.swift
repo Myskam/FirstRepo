@@ -1,135 +1,192 @@
 import Foundation
 
-/// Defines the course curriculum, topic grouping, and unlock progression.
-///
-/// Topics are organized into units. Each unit has:
-/// - `topics`: the 1-2 core topics to practice in this unit
-/// - `nextUnlock`: topics that unlock after mastering this unit
+/// A unit of the curriculum: a small group of related topics the learner
+/// practises together, plus the topics that unlock once the unit is mastered.
 struct CurriculumUnit {
     let id: String
     let displayName: String
-    let topics: [String]           // Topics to focus on in this unit
-    let nextUnlock: [String]       // Topics to unlock after this unit is completed
+    let topics: [String]      // 1–2 closely related topics practised together
+    let nextUnlock: [String]  // topics that unlock once every topic here is mastered
 }
 
+/// Drives the course progression: which topics are unlocked, which to practise
+/// next, and how mastery opens up later units.
+///
+/// Design:
+/// - The learner starts with whatever they reported knowing during onboarding
+///   (plus the very first unit). Those are their initial `unlockedTopics`.
+/// - When every topic in a unit reaches `.mastered`, that unit's `nextUnlock`
+///   topics become available. Newly-unlocked topics are flipped to
+///   `.introduced` so they're immediately practisable, and the unlock set is
+///   persisted on the profile.
+/// - A session focuses on 1–2 related topics from the earliest unlocked unit
+///   that still needs work, rather than a random scattering.
 final class CourseStructure {
     static let shared = CourseStructure()
+    private init() {}
 
-    // Define the A1 curriculum as a progression of units
+    // MARK: - Curriculum definition (A1 progression)
+
     private let curriculum: [CurriculumUnit] = [
-        // Unit 0: A1 Basics (always available)
         CurriculumUnit(
-            id: "a1_basics",
+            id: "u_greetings",
             displayName: "Greetings & Basics",
             topics: ["a1_greetings"],
             nextUnlock: ["a1_sein", "a1_numbers"]
         ),
-
-        // Unit 1: Sein verb (unlocked after greetings)
         CurriculumUnit(
-            id: "a1_sein_unit",
-            displayName: "The Verb 'Sein'",
-            topics: ["a1_sein"],
-            nextUnlock: ["a1_nominativ", "a1_pronouns", "a1_present_regular"]
+            id: "u_numbers",
+            displayName: "Numbers & Time",
+            topics: ["a1_numbers"],
+            nextUnlock: ["a1_time"]
         ),
-
-        // Unit 2: Nominativ case (unlocked after sein)
         CurriculumUnit(
-            id: "a1_nominativ_unit",
+            id: "u_sein",
+            displayName: "The Verb \u{201E}sein\u{201C}",
+            topics: ["a1_sein"],
+            nextUnlock: ["a1_pronouns", "a1_nominativ"]
+        ),
+        CurriculumUnit(
+            id: "u_pronouns",
+            displayName: "Personal Pronouns",
+            topics: ["a1_pronouns"],
+            nextUnlock: ["a1_present_regular"]
+        ),
+        CurriculumUnit(
+            id: "u_nominativ",
             displayName: "Nominativ Case",
             topics: ["a1_nominativ"],
-            nextUnlock: ["a1_akkusativ", "a1_plural"]
+            nextUnlock: ["a1_haben", "a1_plural", "a1_akkusativ"]
         ),
-
-        // Unit 3: Regular verbs & present (unlocked after sein)
         CurriculumUnit(
-            id: "a1_present_unit",
+            id: "u_haben",
+            displayName: "The Verb \u{201E}haben\u{201C}",
+            topics: ["a1_haben"],
+            nextUnlock: []
+        ),
+        CurriculumUnit(
+            id: "u_present",
             displayName: "Present Tense Verbs",
             topics: ["a1_present_regular"],
-            nextUnlock: ["a1_present_irregular", "a1_modal_verbs", "a1_word_order"]
+            nextUnlock: ["a1_present_irregular", "a1_modal_verbs", "a1_word_order", "a1_questions", "a1_negation"]
         ),
-
-        // Unit 4: Akkusativ case (unlocked after nominativ)
         CurriculumUnit(
-            id: "a1_akkusativ_unit",
+            id: "u_akkusativ",
             displayName: "Akkusativ Case",
             topics: ["a1_akkusativ"],
             nextUnlock: ["a1_adjectives_pred"]
         ),
-
-        // Unit 5: Irregular verbs (unlocked after regular)
         CurriculumUnit(
-            id: "a1_irregular_unit",
-            displayName: "Irregular Verbs",
-            topics: ["a1_present_irregular"],
-            nextUnlock: ["a1_haben", "a1_perfekt"]
+            id: "u_irregular",
+            displayName: "Irregular & Modal Verbs",
+            topics: ["a1_present_irregular", "a1_modal_verbs"],
+            nextUnlock: ["a1_separable_verbs", "a1_perfekt"]
         ),
-
-        // Unit 6: Modal verbs (unlocked after regular)
         CurriculumUnit(
-            id: "a1_modal_unit",
-            displayName: "Modal Verbs",
-            topics: ["a1_modal_verbs"],
-            nextUnlock: ["a1_separable_verbs"]
-        ),
-
-        // Unit 7: Perfect tense (unlocked after irregular)
-        CurriculumUnit(
-            id: "a1_perfekt_unit",
+            id: "u_perfekt",
             displayName: "Perfect Tense (Perfekt)",
             topics: ["a1_perfekt"],
-            nextUnlock: ["a1_past_tense"]
+            nextUnlock: []
         ),
     ]
 
-    private init() {}
+    /// Topic ids in their pedagogical order across the whole curriculum.
+    private lazy var orderedTopicIDs: [String] = curriculum.flatMap(\.topics)
 
-    /// Get all topics that should be unlocked for a new user (A1 fundamentals).
-    func getInitialUnlockedTopics() -> Set<String> {
-        [curriculum.first?.topics.first ?? ""]  // Just greetings to start
-    }
+    private let practisableStatuses: Set<TopicStatus> = [.active, .struggling, .introduced]
 
-    /// Get the next topics to unlock based on current unlocked state and profile progress.
-    func getUnlockedTopics(for profile: StudentProfile) -> Set<String> {
-        var unlocked = profile.unlockedTopics
+    // MARK: - Initial unlock
 
-        // Check each unit: if all its topics are mastered, unlock the next batch
-        for unit in curriculum {
-            let unitTopicsAreMastered = unit.topics.allSatisfy {
-                profile.topics[$0]?.status == .mastered
-            }
-            if unitTopicsAreMastered && !unlocked.contains(unit.topics.first ?? "") {
-                // This unit is done, unlock next topics
-                unlocked.formUnion(unit.nextUnlock)
-            }
+    /// The set a learner starts with: everything they already reported knowing
+    /// (any non-`notCovered` topic) plus the very first unit, so there is always
+    /// at least one thing to practise.
+    func initialUnlockedTopics(for profile: StudentProfile) -> Set<String> {
+        var unlocked = Set(profile.topics.filter { $0.value.status != .notCovered }.keys)
+        if let firstTopic = curriculum.first?.topics.first {
+            unlocked.insert(firstTopic)
         }
-
         return unlocked
     }
 
-    /// Get active topics (that can be practiced right now) within the unlocked set.
-    func getAvailablePracticeTopics(for profile: StudentProfile) -> [String] {
-        let unlocked = getUnlockedTopics(for: profile)
-        return profile.topics.keys.filter { topicId in
-            unlocked.contains(topicId) &&
-            [.active, .struggling, .introduced].contains(profile.topics[topicId]?.status)
-        }.sorted()
-    }
+    // MARK: - Progression
 
-    /// Get 1-2 related topics from the available set, grouped by unit.
-    func selectTopicsForSession(availableTopics: [String]) -> [String] {
-        guard !availableTopics.isEmpty else { return [] }
-
-        // Find the first unit that has an active topic
-        for unit in curriculum {
-            let unitTopicsInAvailable = unit.topics.filter { availableTopics.contains($0) }
-            if !unitTopicsInAvailable.isEmpty {
-                // Return up to 2 topics from this unit
-                return Array(unitTopicsInAvailable.prefix(2))
+    /// Compute the full unlocked set given current progress. A unit's
+    /// `nextUnlock` is granted once *every* topic in that unit is mastered.
+    /// Idempotent — safe to call repeatedly.
+    func computeUnlockedTopics(for profile: StudentProfile) -> Set<String> {
+        var unlocked = profile.unlockedTopics
+        // Iterate to a fixed point so a chain of masteries can cascade in one pass.
+        var changed = true
+        while changed {
+            changed = false
+            for unit in curriculum {
+                let mastered = unit.topics.allSatisfy { profile.topics[$0]?.status == .mastered }
+                guard mastered else { continue }
+                for topic in unit.nextUnlock where !unlocked.contains(topic) {
+                    unlocked.insert(topic)
+                    changed = true
+                }
             }
         }
+        return unlocked
+    }
 
-        // Fallback: return first available topic
-        return [availableTopics.first ?? ""]
+    /// Apply progression to a profile in place: grants newly-unlocked topics,
+    /// flips any that were `.notCovered` to `.introduced` so they can be
+    /// practised, and updates `unlockedTopics`.
+    ///
+    /// - Returns: the topic ids unlocked by this call (empty if nothing new).
+    @discardableResult
+    func applyProgression(to profile: inout StudentProfile) -> [String] {
+        let updated = computeUnlockedTopics(for: profile)
+        let newlyUnlocked = updated.subtracting(profile.unlockedTopics)
+
+        for topicId in newlyUnlocked {
+            let status = profile.topics[topicId]?.status ?? .notCovered
+            if status == .notCovered {
+                profile.topics[topicId] = TopicState(status: .introduced)
+            }
+        }
+        profile.unlockedTopics = updated
+
+        // Preserve curriculum order in the returned list.
+        return orderedTopicIDs.filter { newlyUnlocked.contains($0) }
+    }
+
+    // MARK: - Session selection
+
+    /// Unlocked topics that currently need practice, in curriculum order.
+    func availablePracticeTopics(for profile: StudentProfile) -> [String] {
+        let unlocked = profile.unlockedTopics.isEmpty
+            ? computeUnlockedTopics(for: profile)
+            : profile.unlockedTopics
+
+        let practisable = profile.topics
+            .filter { unlocked.contains($0.key) && practisableStatuses.contains($0.value.status) }
+            .map(\.key)
+
+        // Curriculum-ordered first, then any leftover (e.g. higher-level) topics.
+        let ordered = orderedTopicIDs.filter { practisable.contains($0) }
+        let leftover = practisable.filter { !orderedTopicIDs.contains($0) }.sorted()
+        return ordered + leftover
+    }
+
+    /// Choose 1–2 related topics for a session: the earliest unlocked unit that
+    /// still has a practisable topic, so practice stays focused and coherent.
+    func selectTopicsForSession(for profile: StudentProfile) -> [String] {
+        let available = Set(availablePracticeTopics(for: profile))
+        guard !available.isEmpty else { return [] }
+
+        for unit in curriculum {
+            let hits = unit.topics.filter { available.contains($0) }
+            if !hits.isEmpty { return Array(hits.prefix(2)) }
+        }
+        // Fallback for topics outside the defined units (keeps higher levels working).
+        return Array(availablePracticeTopics(for: profile).prefix(2))
+    }
+
+    /// Human-readable name of the unit a topic belongs to (for UI labels).
+    func unitName(forTopic topicId: String) -> String? {
+        curriculum.first { $0.topics.contains(topicId) }?.displayName
     }
 }

@@ -5,13 +5,15 @@ final class SessionService {
     private init() {}
 
     func buildSession(profile: StudentProfile) async throws -> [Exercise] {
-        // Get available topics from the course structure
-        let availableTopics = CourseStructure.shared.getAvailablePracticeTopics(for: profile)
-        let focusTopics = CourseStructure.shared.selectTopicsForSession(availableTopics: availableTopics)
+        // Focus the session on 1–2 related topics from the earliest unlocked unit.
+        let focusTopics = CourseStructure.shared.selectTopicsForSession(for: profile)
 
-        // Create a modified profile that only has these focus topics as active
+        // Narrow the profile to just those topics so the prompt stays focused.
+        // If selection came back empty (edge case), fall back to the full profile.
         var focusedProfile = profile
-        focusedProfile.topics = profile.topics.filter { focusTopics.contains($0.key) }
+        if !focusTopics.isEmpty {
+            focusedProfile.topics = profile.topics.filter { focusTopics.contains($0.key) }
+        }
 
         // Try Claude first; fall back to bundled exercises on failure
         do {

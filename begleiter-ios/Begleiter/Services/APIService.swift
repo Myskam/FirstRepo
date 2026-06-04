@@ -90,6 +90,7 @@ Rules:
 - Vary question types: multiple_choice, fill_blank, match_pairs, reorder_words, article_tap, sentence_correction, rotating_wheel
 - Use article_tap for noun-gender practice; use sentence_correction to spot grammar mistakes
 - fill_blank: use exactly ONE ___ per sentence; provide 5-8 shuffled options including the correct answer
+- rotating_wheel: the FIRST item in "options" MUST be the correct answer (the app shuffles for display); provide 4-6 options
 - Explanation must be friendly and explain the grammar rule in plain English
 - Return ONLY valid JSON. No preamble, no markdown, no explanation.
 
@@ -101,7 +102,7 @@ Response format:
   {"id":"ex4","topic":"topic_id","type":"reorder_words","words":["ich","gehe","morgen"],"correct":"Ich gehe morgen","hint":null,"explanation":"string"},
   {"id":"ex5","topic":"topic_id","type":"article_tap","noun":"Tisch","context":"___ Tisch ist groß.","correct":"der","hint":null,"explanation":"string"},
   {"id":"ex6","topic":"topic_id","type":"sentence_correction","words":["Ich","kaufe","einen","Buch"],"wrongIndex":2,"correction":"ein","hint":null,"explanation":"string"},
-  {"id":"ex7","topic":"topic_id","type":"rotating_wheel","center":"Der Tisch ist...","options":["groß","klein","neu","alt"],"context":null,"hint":null,"explanation":"string"}
+  {"id":"ex7","topic":"topic_id","type":"rotating_wheel","center":"Der Tisch ist sehr ___","options":["groß","klein","neu","alt"],"context":null,"hint":null,"explanation":"string"}
 ]}
 """
         let raw = try await withRetry { [self] in try await call(prompt: prompt, model: self.haiku) }

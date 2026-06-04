@@ -49,7 +49,8 @@ struct ActiveSessionView: View {
                     summary: summary,
                     answers: sessionVM.answers,
                     profile: profile,
-                    totalXP: sessionVM.xp
+                    totalXP: sessionVM.xp,
+                    newlyUnlockedTopics: sessionVM.newlyUnlockedTopics
                 )
             }
         }
