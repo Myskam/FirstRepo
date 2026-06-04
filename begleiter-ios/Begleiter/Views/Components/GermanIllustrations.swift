@@ -191,7 +191,7 @@ struct BrandenburgGate: View {
                 ctx.fill(Path(roundedRect: rect, cornerRadius: colW * 0.2), with: .color(stone))
                 // subtle fluting line
                 let line = CGRect(x: x + colW * 0.45, y: colTop, width: colW * 0.1, height: colBottom - colTop)
-                ctx.fill(Path(rect: line), with: .color(stoneDark.opacity(0.4)))
+                ctx.fill(Path(line), with: .color(stoneDark.opacity(0.4)))
             }
 
             // Entablature (the wide horizontal block the columns hold up)
