@@ -7,12 +7,18 @@ final class TaxonomyService {
 
     private init() {
         guard let url = Bundle.main.url(forResource: "taxonomy", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let loaded = try? JSONDecoder().decode([TaxonomyTopic].self, from: data) else {
+              let data = try? Data(contentsOf: url) else {
             topics = []
             return
         }
-        topics = loaded
+        struct Wrapper: Decodable { let topics: [TaxonomyTopic] }
+        if let wrapper = try? JSONDecoder().decode(Wrapper.self, from: data) {
+            topics = wrapper.topics
+        } else if let flat = try? JSONDecoder().decode([TaxonomyTopic].self, from: data) {
+            topics = flat
+        } else {
+            topics = []
+        }
     }
 
     func allTopics() -> [TaxonomyTopic] { topics }
