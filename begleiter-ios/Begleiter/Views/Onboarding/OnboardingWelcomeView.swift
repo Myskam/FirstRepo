@@ -21,12 +21,17 @@ struct OnboardingWelcomeView: View {
         VStack(spacing: 0) {
             Spacer()
 
-            // Flag — spring bounce on appear
-            Text("🇩🇪")
-                .font(.system(size: 80))
-                .scaleEffect(flagScale)
-                .opacity(flagVisible ? 1 : 0)
-                .padding(.bottom, 24)
+            // Brandenburg Gate behind the waving flag hero
+            ZStack(alignment: .bottom) {
+                BrandenburgGate(width: 220, tint: Color(.systemGray3))
+                    .opacity(flagVisible ? 0.5 : 0)
+                    .offset(y: 24)
+
+                WavingGermanFlag(width: 150, height: 110)
+                    .scaleEffect(flagScale)
+                    .opacity(flagVisible ? 1 : 0)
+            }
+            .padding(.bottom, 24)
 
             // Title
             Text("Willkommen bei Begleiter")
@@ -36,12 +41,18 @@ struct OnboardingWelcomeView: View {
                 .opacity(contentVisible ? 1 : 0)
                 .offset(y: contentVisible ? 0 : 12)
 
+            // Tricolour accent under the title
+            GermanFlagStripe(height: 5)
+                .frame(width: 96)
+                .padding(.top, 10)
+                .opacity(contentVisible ? 1 : 0)
+
             // Subtitle
             Text("Your personal AI German tutor")
                 .font(.title3)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-                .padding(.top, 8)
+                .padding(.top, 10)
                 .padding(.horizontal, 32)
                 .opacity(contentVisible ? 1 : 0)
                 .offset(y: contentVisible ? 0 : 12)
@@ -52,8 +63,19 @@ struct OnboardingWelcomeView: View {
                 BulletRow(text: "Tracks your progress across 60 topics")
                 BulletRow(text: "Works offline with fallback exercises")
             }
-            .padding(.top, 36)
+            .padding(.top, 32)
             .padding(.horizontal, 40)
+            .opacity(contentVisible ? 1 : 0)
+            .offset(y: contentVisible ? 0 : 16)
+
+            // Culture badge row
+            HStack(spacing: 14) {
+                CultureBadge(emoji: "🥨", label: "Pretzel")
+                CultureBadge(emoji: "🍺", label: "Beer")
+                CultureBadge(emoji: "🏰", label: "Castle")
+                CultureBadge(emoji: "🥖", label: "Bread")
+            }
+            .padding(.top, 28)
             .opacity(contentVisible ? 1 : 0)
             .offset(y: contentVisible ? 0 : 16)
 
@@ -109,9 +131,9 @@ private struct BulletRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
-            Text("✦")
+            Image(systemName: "checkmark.seal.fill")
                 .font(.caption.weight(.semibold))
-                .foregroundStyle(Color("BrandGreen"))
+                .foregroundStyle(German.red)
                 .padding(.top, 2)
 
             Text(text)

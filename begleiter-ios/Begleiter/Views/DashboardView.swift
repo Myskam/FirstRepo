@@ -65,6 +65,11 @@ struct DashboardView: View {
     @ViewBuilder
     private func mainContent(profile: StudentProfile) -> some View {
         VStack(spacing: 0) {
+            // German tricolour accent under the navigation bar
+            GermanFlagStripe(height: 5)
+                .padding(.horizontal, 16)
+                .padding(.top, 10)
+
             // Stats row
             HStack(spacing: 12) {
                 StatCard(

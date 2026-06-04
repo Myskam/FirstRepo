@@ -85,6 +85,15 @@ struct SessionSummaryView: View {
 
     private var scoreSection: some View {
         VStack(spacing: 8) {
+            // Celebrate a strong session with a German beer stein "Prost!"
+            if accuracy >= 0.8 {
+                BeerStein(size: 72)
+                    .padding(.bottom, 4)
+                Text("Prost! 🎉")
+                    .font(.headline)
+                    .foregroundStyle(German.gold)
+            }
+
             Text("\(correctCount) / \(totalCount)")
                 .font(.system(size: 56, weight: .bold, design: .rounded))
                 .foregroundStyle(scoreColor)
